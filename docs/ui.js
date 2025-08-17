@@ -1,37 +1,38 @@
 class UIController {
     constructor(game) {
-        this.game = game;
-        this.elements = {
-            // ... (todos os elementos da v6.0)
-            floatingTextContainer: document.getElementById('floating-text-container'),
-            toggleMusicBtn: document.getElementById('toggle-music-btn'),
-            toggleSfxBtn: document.getElementById('toggle-sfx-btn'),
-        };
-        this.addEventListeners();
-        this.renderAll();
+        // ...
+        this.initTooltips();
+    }
+
+    // ... (funções da v1)
+
+    // NOVO: Lógica de Temas
+    applyTheme(themeId) {
+        document.body.dataset.theme = themeId;
     }
     
-    // ... (funções da v6.0)
-    
-    // NOVO: Feedback visual ("Juice")
-    showFloatingText(text, color = 'green', element) {
-        const floatingText = document.createElement('div');
-        floatingText.className = `floating-text ${color}`;
-        floatingText.textContent = text;
-        this.elements.floatingTextContainer.appendChild(floatingText);
-        setTimeout(() => floatingText.remove(), 1500);
+    // NOVO: Lógica de Estrelas Cadentes
+    createGoldenStar() {
+        const star = document.createElement('div');
+        star.className = 'golden-star';
+        // ... (lógica para posicionar e animar a estrela)
+        star.onclick = () => this.game.clickGoldenStar(star);
+        this.elements.goldenStarContainer.appendChild(star);
     }
     
-    // NOVO: Modal de Recompensa Diária
-    showDailyRewardModal(day, reward) {
-        const rewardText = Object.entries(reward).map(([res, val]) => `${val} ${res}`).join(', ');
+    // NOVO: Relatório Offline
+    showOfflineReport(time, gains) {
         const content = `
-            <h3>Recompensa do Dia ${day + 1}</h3>
-            <p>Por sua lealdade, o Alto Comando Galáctico lhe concede:</p>
-            <p class="reward-text">${rewardText}</p>
+            <p>Enquanto você esteve fora por ${formatTime(time)}, seus coletores geraram:</p>
+            <h3 class="reward-text">${formatNumber(gains)} Poeira Estelar</h3>
         `;
-        this.showGenericModal("Bônus de Login Diário", content);
+        this.showGenericModal("Bem-vindo de Volta, Comandante!", content);
     }
     
-    // ... (outras funções, como renderBountyBoard)
+    // NOVO: Lógica de Tooltips
+    initTooltips() {
+        // ... (código para mostrar/esconder tooltips ao passar o mouse em elementos com data-tooltip)
+    }
+    
+    // ... (muitas outras funções para renderizar os novos painéis de Missões, Desafios, Estatísticas, etc.)
 }
