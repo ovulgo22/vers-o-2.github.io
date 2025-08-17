@@ -1,6 +1,23 @@
 # vers-o-2.github.io
 
-Relatório de Análise e Correções (Bugs da v6.0 Corrigidos):
+## Novidades Viciantes Adicionadas na v6.1:
+Para aumentar o engajamento e fazer os jogadores voltarem sempre, adicionei mecânicas clássicas de retenção:
+
+Recompensas de Login Diário: A primeira vez que o jogador abre o jogo no dia, ele recebe uma recompensa que melhora a cada dia consecutivo. Um incentivo poderoso para jogar todos os dias.
+
+Conselho de Caçadores de Recompensa: Um novo painel na Embaixada que gera "Contratos" de tempo limitado. Cumpra os objetivos (ex: "Destrua 3 Ninhos Piratas") para ganhar prêmios exclusivos.
+
+Sistema de Prestígio ("Singularidade"): Para jogadores de fim de jogo. Construa a maravilha "O Monólito da Singularidade" e ative-o para reiniciar seu progresso, mas mantendo "Pontos de Singularidade", que concedem bônus permanentes e poderosos para todas as suas futuras jogadas.
+
+Feedback Visual e Sonoro Aprimorado ("Juice"):
+
+Números flutuantes aparecem nos seus recursos quando você os ganha.
+
+Efeitos sonoros distintos para cada ação importante.
+
+Pequenas animações e transições em toda a interface para torná-la mais viva e responsiva.
+
+## Relatório de Análise e Correções (Bugs da v6.0 Corrigidos):
 Após uma varredura completa, identifiquei e corrigi os seguintes problemas críticos e de jogabilidade:
 
 ERRO CRÍTICO (Corrigido): O sistema de Salvar/Carregar era falho. Se uma nova versão do jogo adicionasse uma nova variável, carregar um save antigo quebraria o jogo. Implementei um sistema de "merge" seguro, que carrega os dados salvos em um novo modelo de jogo, garantindo compatibilidade futura e prevenindo erros.
