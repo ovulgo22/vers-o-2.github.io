@@ -3,39 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Mini Kingdoms v4.0 - A Era dos Impérios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Cosmic Empires</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <audio id="background-music" loop>
+        <source src="https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-out-of-this-world/ootw_ambient_space_drone_001.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="game-container">
         <header>
-            <div id="resources">
-                <span id="gold-resource" class="resource-display"></span>
-                <span id="food-resource" class="resource-display"></span>
-                <span id="wood-resource" class="resource-display"></span>
-                <span id="stone-resource" class="resource-display"></span>
+            <div id="player-status">
+                <span id="commander-level">Comandante Nv. 1</span>
+                <div id="xp-bar-container"><div id="xp-bar"></div></div>
             </div>
-            <div id="troops-display">
-                <span id="infantry-resource" class="resource-display"></span>
-                <span id="cavalry-resource" class="resource-display"></span>
-                <span id="archer-resource" class="resource-display"></span>
+            <div id="resources">
+                <span id="credits-resource" class="resource-display" data-tooltip="Créditos Galácticos"></span>
+                <span id="nutrients-resource" class="resource-display" data-tooltip="Nutrientes"></span>
+                <span id="metal-resource" class="resource-display" data-tooltip="Metal"></span>
+                <span id="polymers-resource" class="resource-display" data-tooltip="Polímeros"></span>
+                <span id="tritium-resource" class="resource-display" data-tooltip="Cristais de Trítio"></span>
+                <span id="energy-resource" class="resource-display" data-tooltip="Energia (Produzida/Consumida)"></span>
+            </div>
+            <div id="fleet-display">
+                <span id="fighter-resource" class="resource-display" data-tooltip="Caças"></span>
+                <span id="frigate-resource" class="resource-display" data-tooltip="Fragatas"></span>
+                <span id="cruiser-resource" class="resource-display" data-tooltip="Cruzadores"></span>
+                <span id="corvette-resource" class="resource-display" data-tooltip="Corvetas"></span>
+                <span id="fleet-capacity" class="resource-display" data-tooltip="Capacidade da Frota"></span>
             </div>
         </header>
 
-        <div id="timers-container">
-            </div>
-
-        <main id="main-view">
-            <div id="buildings-grid">
+        <div id="content-wrapper">
+            <div id="left-panel">
+                <div id="timers-container" class="panel">
+                    <h3>Filas Ativas</h3>
+                    <div id="construction-queue"></div>
+                    <div id="research-queue"></div>
                 </div>
-
-            <div id="world-map-container">
-                <h3>Mapa do Mundo</h3>
-                <div id="world-map-grid">
-                    </div>
+                <div id="event-log-container" class="panel">
+                    <h3>Log de Eventos</h3>
+                    <ul id="event-log"></ul>
+                </div>
             </div>
-        </main>
+            
+            <main id="main-view">
+                <div id="buildings-grid">
+                    </div>
+            </main>
+
+            <div id="right-panel">
+                <div id="world-map-container" class="panel">
+                    <h3>Mapa Estelar</h3>
+                    <div id="world-map-grid">
+                        </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="modal-backdrop" class="hidden"></div>
@@ -43,11 +68,6 @@
         <h2 id="modal-title"></h2>
         <div id="modal-content"></div>
         <button class="close-modal-btn">Fechar</button>
-    </div>
-    <div id="battle-modal" class="modal hidden">
-        <h2 id="battle-modal-title">Ataque Tático</h2>
-        <div id="battle-modal-content"></div>
-        <button class="close-modal-btn">Cancelar</button>
     </div>
 
     <script src="data.js"></script>
