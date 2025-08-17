@@ -69,3 +69,37 @@ export function initializeEventListeners() {
     saveButton.addEventListener('click', saveGame);
     resetButton.addEventListener('click', handleReset);
 }
+
+// ... (imports no topo)
+
+// Adicione este elemento ao cache
+const cookieButtonWrapper = document.getElementById('cookie-button-wrapper');
+
+function showClickEffect(amount) {
+    const effect = document.createElement('div');
+    effect.className = 'click-effect';
+    effect.textContent = `+${formatNumber(amount)}`;
+    
+    // Posição aleatória perto do clique
+    const x = 50 + (Math.random() - 0.5) * 50;
+    const y = 50 + (Math.random() - 0.5) * 50;
+    effect.style.left = `${x}%`;
+    effect.style.top = `${y}%`;
+    
+    cookieButtonWrapper.appendChild(effect);
+    
+    // Remove o elemento após a animação
+    setTimeout(() => {
+        effect.remove();
+    }, 1000);
+}
+
+function handleCookieClick() {
+    addCookies(state.cookiesPerClick);
+    updateCookieCount();
+    showClickEffect(state.cookiesPerClick); // <--- NOVA LINHA
+}
+
+// ... (resto do arquivo)
+// Não esqueça de importar formatNumber do utils.js
+import { formatNumber } from './utils.js';
