@@ -1,28 +1,19 @@
-const GAME_DATA = {
-    // ... (CLICK_UPGRADES, GENERATORS, SKILL_TREE, ARTIFACTS, ACHIEVEMENTS da v1, mas rebalanceados)
-    
-    // NOVO: Desafios
-    CHALLENGES: {
-        'c1': { name: "Mãos Vazias", description: "O poder de clique é sempre 1. Conclua para ganhar +50% de poder de clique permanente.", goal: 1e12 },
-        'c2': { name: "Crise de Energia", description: "A produção de coletores é reduzida em 90%. Conclua para que os coletores produzam 25% a mais permanentemente.", goal: 1e15 },
-    },
-    
-    // NOVO: Missões
-    MISSIONS: {
-        daily: [
-            { id: 'd01', description: "Clique 50 Estrelas Cadentes", target: 50, reward: { quasars: 5 } }
-        ],
-        weekly: [
-            { id: 'w01', description: "Realize uma Supernova", target: 1, reward: { quasars: 50 } }
-        ]
-    },
-    
-    // NOVO: Temas de Cores
-    THEMES: [
-        { id: 'theme-nebula', name: "Nebulosa Púrpura", cost: 0 },
-        { id: 'theme-pulsar', name: "Pulsar Dourado", cost: 100 },
-        { id: 'theme-deepspace', name: "Espaço Profundo", cost: 100 }
-    ],
+import { Decimal } from './libs/break_infinity.js';
 
-    //... (e outros dados novos)
-};
+export const BUILDINGS_DATA = [
+    { id: 'cursor', name: 'Cursor', baseCost: new Decimal(15), baseCps: new Decimal(0.1), icon: '👆' },
+    { id: 'grandma', name: 'Vovó', baseCost: new Decimal(100), baseCps: new Decimal(1), icon: '👵' },
+    // ... adicione muitas outras construções aqui
+];
+
+export const UPGRADES_DATA = [
+    { id: 'uc01', name: 'Cursor Reforçado', cost: new Decimal(100), target: 'cursor', multiplier: 2, required: { type: 'building', id: 'cursor', amount: 1 } },
+    // ... adicione muitas outras melhorias aqui
+];
+
+export const ACHIEVEMENTS_DATA = [
+    { id: 'ach01', name: 'Começando', description: 'Clique no cookie pela primeira vez.', condition: (state) => state.player.manualClicks >= 1 },
+    // ... adicione muitas outras conquistas aqui
+];
+
+// ... outras constantes de dados (PRESTIGE_UPGRADES, NEWS_TICKER, etc.)
