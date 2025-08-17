@@ -1,111 +1,71 @@
+/* NOVO: Temas de Cores */
+body[data-theme="theme-nebula"] {
+    --primary-accent: #7e60ff; /* Roxo Nebulosa */
+    --secondary-accent: #ff00f2;
+}
+body[data-theme="theme-pulsar"] {
+    --primary-accent: #f2c75d; /* Dourado Estelar */
+    --secondary-accent: #ff9900;
+}
+body[data-theme="theme-deepspace"] {
+    --primary-accent: #00e5ff; /* Ciano Elétrico */
+    --secondary-accent: #29f273;
+}
+
 :root {
     --bg-color: #0c0a18;
     --panel-bg: rgba(24, 21, 46, 0.7);
     --border-color: rgba(126, 96, 255, 0.2);
-    --primary-accent: #f2c75d; /* Dourado Estelar */
-    --secondary-accent: #7e60ff; /* Roxo Nebulosa */
     --text-color: #d8d4ff;
     --font-display: 'Share Tech Mono', monospace;
     --font-body: 'Poppins', sans-serif;
+    /* As variáveis de cor primária e secundária serão herdadas do body */
 }
 
-/* Animação de Estrelas em CSS Puro */
-@keyframes move-stars {
-    from { transform: translateY(0px); }
-    to { transform: translateY(-2000px); }
-}
+/* ... (Animação de estrelas da v1) ... */
 
-#star-animation-container {
+/* NOVO: Estrela Cadente */
+.golden-star {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: -1;
-    overflow: hidden;
-}
-
-#stars1, #stars2, #stars3 {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 200%;
-    background-repeat: repeat;
-    background-position: 0 0;
-    animation-name: move-stars;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-/* CSS gerado, não é uma imagem .png */
-#stars1 {
-    background-image: radial-gradient(1px 1px at 20px 30px, #eee, transparent),
-                      radial-gradient(1px 1px at 40px 70px, #fff, transparent),
-                      radial-gradient(1px 1px at 90px 40px, #fff, transparent);
-    background-size: 200px 200px;
-    animation-duration: 50s;
-}
-#stars2 {
-    background-image: radial-gradient(2px 2px at 50px 100px, #ddd, transparent),
-                      radial-gradient(2px 2px at 160px 120px, #fff, transparent);
-    background-size: 300px 300px;
-    animation-duration: 100s;
-}
-#stars3 {
-    background-image: radial-gradient(3px 3px at 100px 250px, #fff, transparent),
-                      radial-gradient(3px 3px at 250px 80px, #ddd, transparent);
-    background-size: 500px 500px;
-    animation-duration: 150s;
-}
-
-/* Estilo geral */
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: var(--font-body);
-    overflow: hidden;
-}
-
-#game-container {
-    display: grid;
-    grid-template-columns: 350px 1fr 400px;
-    gap: 15px; padding: 15px;
-    height: 100vh;
-    box-sizing: border-box;
-    backdrop-filter: blur(2px);
-}
-
-.column { display: flex; flex-direction: column; gap: 15px; }
-.panel {
-    background-color: var(--panel-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
-}
-
-/* Pulsar (Botão Principal) */
-#core-container { position: relative; flex-grow: 1; display: flex; justify-content: center; align-items: center; }
-#pulsar {
-    width: 220px; height: 220px;
-    background: radial-gradient(circle, var(--primary-accent) 0%, rgba(242, 199, 93, 0) 70%);
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-accent);
     border-radius: 50%;
+    z-index: 1000;
     cursor: pointer;
-    transition: transform 0.1s ease-out;
-    box-shadow: 0 0 40px var(--primary-accent), inset 0 0 20px #fff;
+    box-shadow: 0 0 20px var(--primary-accent), 0 0 40px #fff;
+    transition: transform 0.2s;
 }
-#pulsar:active { transform: scale(0.95); }
+.golden-star:hover { transform: scale(1.2); }
 
-/* Feedback Visual (Juice) */
-.floating-number {
-    position: absolute;
-    font-family: var(--font-display);
-    font-size: 1.8em;
-    color: var(--primary-accent);
+/* ... (Estilos da v1, agora mais refinados) ... */
+
+.scrollable { overflow-y: auto; max-height: 100%; }
+.panel { display: flex; flex-direction: column; }
+#main-tab-content { flex-grow: 1; overflow: hidden; }
+.main-tab-pane { height: 100%; }
+
+/* NOVO: Barra de Tempestade Estelar */
+#storm-bar-container {
+    width: 100%; height: 15px; background-color: #111;
+    border-radius: 5px; margin: 10px 0;
+}
+#storm-bar {
+    width: 0%; height: 100%;
+    background: linear-gradient(90deg, var(--secondary-accent), var(--primary-accent));
+    border-radius: 5px; transition: width 0.2s;
+}
+
+/* NOVO: Tooltip */
+#tooltip {
+    position: fixed;
+    background-color: var(--bg-color);
+    border: 1px solid var(--primary-accent);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 9999;
     pointer-events: none;
-    text-shadow: 0 0 5px #000;
-    animation: float-up 1s ease-out forwards;
-}
-@keyframes float-up { 
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-100px); }
+    font-size: 0.9em;
 }
 
-/* ... (Estilos adaptados para geradores, upgrades, abas, etc.) ... */
+/* ... (Estilos para todos os novos painéis e botões) ... */
