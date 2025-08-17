@@ -1,45 +1,111 @@
-:root { /* ... mesmas variáveis de cor da v6.0 ... */ }
-
-/* ANIMAÇÃO DE FUNDO OTIMIZADA */
-@keyframes move-stars { from { transform: translateY(0); } to { transform: translateY(-2000px); } }
-@keyframes rotate-planet { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes float-up { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
-
-body { /* ... estilo principal ... */ overflow: hidden; }
-
-#background-container { /* ... */ }
-.star-field { position: absolute; top: 0; left: 0; width: 100%; height: 300%; background: transparent; background-image: radial-gradient(white 1px, transparent 1.1px); background-size: 30px 30px; animation: move-stars 150s linear infinite; }
-
-.planet {
-    position: fixed;
-    border-radius: 50%;
-    /* ... estilos de planetas da v6.0 ... */
-    /* CORREÇÃO: Animação mais simples e performática */
-    animation: none; /* A animação será controlada via JS para performance */
+:root {
+    --bg-color: #0c0a18;
+    --panel-bg: rgba(24, 21, 46, 0.7);
+    --border-color: rgba(126, 96, 255, 0.2);
+    --primary-accent: #f2c75d; /* Dourado Estelar */
+    --secondary-accent: #7e60ff; /* Roxo Nebulosa */
+    --text-color: #d8d4ff;
+    --font-display: 'Share Tech Mono', monospace;
+    --font-body: 'Poppins', sans-serif;
 }
 
-/* ... (Restante do CSS da v6.0 adaptado e polido) ... */
+/* Animação de Estrelas em CSS Puro */
+@keyframes move-stars {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-2000px); }
+}
 
-/* NOVO: Feedback Visual "Juice" */
-#floating-text-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 101; pointer-events: none; }
-.floating-text { position: absolute; animation: float-up 1.5s ease-out forwards; font-family: var(--font-title); font-size: 1.5em; text-shadow: 0 0 5px #000; }
-.floating-text.green { color: var(--green); }
-.floating-text.red { color: var(--red); }
-
-/* NOVO: Painel de Configurações */
-.settings-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.settings-row button { width: auto; padding: 5px 10px; }
-.save-load-panel button { flex: 1; }
-
-/* NOVO: Scanlines para Modais */
-.modal::after {
-    content: '';
-    position: absolute;
+#star-animation-container {
+    position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-image: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
-    background-size: 100% 4px, 3px 100%;
-    pointer-events: none;
-    animation: scanlines 10s linear infinite;
+    z-index: -1;
+    overflow: hidden;
 }
-@keyframes scanlines { 0% { background-position: 0 0; } 100% { background-position: 0 -200px; } }
+
+#stars1, #stars2, #stars3 {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 200%;
+    background-repeat: repeat;
+    background-position: 0 0;
+    animation-name: move-stars;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+/* CSS gerado, não é uma imagem .png */
+#stars1 {
+    background-image: radial-gradient(1px 1px at 20px 30px, #eee, transparent),
+                      radial-gradient(1px 1px at 40px 70px, #fff, transparent),
+                      radial-gradient(1px 1px at 90px 40px, #fff, transparent);
+    background-size: 200px 200px;
+    animation-duration: 50s;
+}
+#stars2 {
+    background-image: radial-gradient(2px 2px at 50px 100px, #ddd, transparent),
+                      radial-gradient(2px 2px at 160px 120px, #fff, transparent);
+    background-size: 300px 300px;
+    animation-duration: 100s;
+}
+#stars3 {
+    background-image: radial-gradient(3px 3px at 100px 250px, #fff, transparent),
+                      radial-gradient(3px 3px at 250px 80px, #ddd, transparent);
+    background-size: 500px 500px;
+    animation-duration: 150s;
+}
+
+/* Estilo geral */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    overflow: hidden;
+}
+
+#game-container {
+    display: grid;
+    grid-template-columns: 350px 1fr 400px;
+    gap: 15px; padding: 15px;
+    height: 100vh;
+    box-sizing: border-box;
+    backdrop-filter: blur(2px);
+}
+
+.column { display: flex; flex-direction: column; gap: 15px; }
+.panel {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+
+/* Pulsar (Botão Principal) */
+#core-container { position: relative; flex-grow: 1; display: flex; justify-content: center; align-items: center; }
+#pulsar {
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, var(--primary-accent) 0%, rgba(242, 199, 93, 0) 70%);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+    box-shadow: 0 0 40px var(--primary-accent), inset 0 0 20px #fff;
+}
+#pulsar:active { transform: scale(0.95); }
+
+/* Feedback Visual (Juice) */
+.floating-number {
+    position: absolute;
+    font-family: var(--font-display);
+    font-size: 1.8em;
+    color: var(--primary-accent);
+    pointer-events: none;
+    text-shadow: 0 0 5px #000;
+    animation: float-up 1s ease-out forwards;
+}
+@keyframes float-up { 
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-100px); }
+}
+
+/* ... (Estilos adaptados para geradores, upgrades, abas, etc.) ... */
