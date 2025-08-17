@@ -1,9 +1,0 @@
-/* style.css - Folha de Estilos Completa v2.0 */
-:root { --font-main: 'Inter', sans-serif; }
-body.theme-dark { --bg-color: #1a1a1a; --panel-bg: #2b2b2b; --text-color: #f0f0f0; --accent-color: #ffa500; --prestige-color: #4a90e2; --disabled-color: #555; --border-color: #444; --shadow-color: rgba(0,0,0,0.5); --success-color: #2ecc71; --danger-color: #e74c3c; }
-body.theme-light { --bg-color: #f4f4f9; --panel-bg: #ffffff; --text-color: #1a1a1a; --accent-color: #f57c00; --prestige-color: #2968c8; --disabled-color: #e0e0e0; --border-color: #ddd; --shadow-color: rgba(0,0,0,0.1); --success-color: #27ae60; --danger-color: #c0392b; }
-/* ... (muitos outros estilos para layout, botões, modais, animações, etc.) ... */
-body { font-family: var(--font-main); background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; padding-top: 50px; overflow: hidden; user-select: none; transition: background-color 0.3s, color 0.3s; }
-.hidden { display: none !important; }
-.visible { display: flex !important; }
-/* ... estilos para overlays, game-container, colunas, item-card, etc ... */
