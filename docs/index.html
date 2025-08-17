@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Simulator Avançado</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+</head>
+<body>
+    <div id="game-container">
+        <header class="panel">
+            <h1>Cookie Simulator</h1>
+            <div id="stats-container">
+                <p>Cookies por segundo: <span id="cps-stat">0</span></p>
+            </div>
+        </header>
+
+        <main id="main-content">
+            <section id="left-panel" class="panel">
+                <div id="cookie-zone">
+                    <h2 id="cookie-counter">0</h2>
+                    <p>cookies</p>
+                    <button id="cookie-button" aria-label="Clique para ganhar cookies">
+                        🍪
+                    </button>
+                </div>
+            </section>
+
+            <section id="middle-panel" class="panel scrollable">
+                <h2>Prédios</h2>
+                <div id="buildings-container">
+                    </div>
+            </section>
+
+            <section id="right-panel" class="panel scrollable">
+                <h2>Upgrades</h2>
+                <div id="upgrades-container">
+                    </div>
+            </section>
+        </main>
+        
+        <footer class="panel">
+             <button id="save-button">Salvar Jogo</button>
+             <button id="reset-button">Resetar Jogo</button>
+             <p id="save-feedback"></p>
+        </footer>
+    </div>
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
