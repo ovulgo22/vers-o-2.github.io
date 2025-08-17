@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Simulator Avançado</title>
+    <title>Cookie Simulator Deluxe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
 </head>
@@ -12,7 +15,7 @@
         <header class="panel">
             <h1>Cookie Simulator</h1>
             <div id="stats-container">
-                <p>Cookies por segundo: <span id="cps-stat">0</span></p>
+                <p>Cookies por segundo: <strong id="cps-stat">0</strong></p>
             </div>
         </header>
 
@@ -21,31 +24,31 @@
                 <div id="cookie-zone">
                     <h2 id="cookie-counter">0</h2>
                     <p>cookies</p>
-                    <button id="cookie-button" aria-label="Clique para ganhar cookies">
-                        🍪
-                    </button>
+                    <div id="cookie-button-wrapper">
+                        <button id="cookie-button" aria-label="Clique para ganhar cookies">🍪</button>
+                    </div>
                 </div>
             </section>
 
             <section id="middle-panel" class="panel scrollable">
-                <h2>Prédios</h2>
-                <div id="buildings-container">
-                    </div>
+                <h2><span class="icon">🏢</span>Prédios</h2>
+                <div id="buildings-container"></div>
             </section>
 
             <section id="right-panel" class="panel scrollable">
-                <h2>Upgrades</h2>
-                <div id="upgrades-container">
-                    </div>
+                <h2><span class="icon">✨</span>Upgrades</h2>
+                <div id="upgrades-container"></div>
             </section>
         </main>
         
         <footer class="panel">
-             <button id="save-button">Salvar Jogo</button>
-             <button id="reset-button">Resetar Jogo</button>
+             <button id="save-button" class="action-button">Salvar</button>
+             <button id="reset-button" class="action-button danger">Resetar</button>
              <p id="save-feedback"></p>
         </footer>
     </div>
+
+    <div id="golden-cookie" class="hidden">🌟</div>
     
     <script type="module" src="js/main.js"></script>
 </body>
