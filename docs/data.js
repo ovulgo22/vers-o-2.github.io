@@ -1,32 +1,41 @@
 const GAME_DATA = {
     buildings: {
-        farm: { name: "Fazenda", maxLevel: 20, icon: '🌾', cost: { food: 50, wood: 100 }, time: 10, production: { type: 'food', base: 5 } },
-        sawmill: { name: "Serraria", maxLevel: 20, icon: '🌲', cost: { food: 100, wood: 50 }, time: 10, production: { type: 'wood', base: 5 } },
-        quarry: { name: "Pedreira", maxLevel: 20, icon: '⛏️', cost: { food: 150, wood: 100 }, time: 15, production: { type: 'stone', base: 3 } },
-        warehouse: { name: "Armazém", maxLevel: 15, icon: '📦', cost: { wood: 200, stone: 100 }, time: 20, capacity: { base: 10000 } },
-        barracks: { name: "Quartel", maxLevel: 10, icon: '⚔️', cost: { wood: 150, stone: 150 }, time: 30 },
-        wall: { name: "Muralha", maxLevel: 10, icon: '🧱', cost: { stone: 500 }, time: 60, defense: { base: 0.02 } },
-        academy: { name: "Academia", maxLevel: 5, icon: '📜', cost: { wood: 1000, stone: 1000 }, time: 120 },
-        heroesHall: { name: "Salão dos Heróis", maxLevel: 5, icon: '👑', cost: { gold: 5000, wood: 2000 }, time: 300 }
+        commandCenter: { name: "Centro de Comando", maxLevel: 10, cost: { metal: 1000 }, time: 60, provides: { energy: 10 } },
+        hydroponics: { name: "Hidropônicos", maxLevel: 20, cost: { credits: 100, metal: 50 }, time: 10, provides: { production: { type: 'nutrients', base: 5 } }, consumes: { energy: 2 } },
+        metalExtractor: { name: "Extrator de Metal", maxLevel: 20, cost: { credits: 100, metal: 50 }, time: 10, provides: { production: { type: 'metal', base: 5 } }, consumes: { energy: 2 } },
+        polymerSynth: { name: "Sintetizador de Polímeros", maxLevel: 20, cost: { credits: 150, metal: 100 }, time: 15, provides: { production: { type: 'polymers', base: 3 } }, consumes: { energy: 3 } },
+        tritiumRefinery: { name: "Refinaria de Trítio", maxLevel: 10, cost: { metal: 5000, polymers: 2500 }, time: 300, provides: { production: { type: 'tritium', base: 0.1 } }, consumes: { energy: 10 } },
+        
+        nutrientSilo: { name: "Silo de Nutrientes", maxLevel: 15, cost: { metal: 200, polymers: 100 }, time: 20, provides: { capacity: { type: 'nutrients', base: 10000 } } },
+        metalSilo: { name: "Silo de Metal", maxLevel: 15, cost: { metal: 200, polymers: 100 }, time: 20, provides: { capacity: { type: 'metal', base: 10000 } } },
+        polymerSilo: { name: "Silo de Polímeros", maxLevel: 15, cost: { metal: 200, polymers: 100 }, time: 20, provides: { capacity: { type: 'polymers', base: 10000 } } },
+
+        fusionReactor: { name: "Reator de Fusão", maxLevel: 15, cost: { metal: 800, polymers: 400 }, time: 180, provides: { energy: 20 } },
+        
+        shipyard: { name: "Estaleiro", maxLevel: 10, cost: { metal: 150, polymers: 150 }, time: 30, consumes: { energy: 5 } },
+        fleetHangar: { name: "Hangar da Frota", maxLevel: 10, cost: { metal: 300 }, time: 45, provides: { fleetCap: 20 }, consumes: { energy: 1 } },
+        planetaryShield: { name: "Escudo Planetário", maxLevel: 10, cost: { polymers: 500 }, time: 60, provides: { defense: 100 }, consumes: { energy: 8 } },
+        ionCannon: { name: "Canhão de Íons", maxLevel: 10, cost: { metal: 1000, tritium: 10 }, time: 240, provides: { planetAttack: 50 }, consumes: { energy: 15 } },
+        
+        academy: { name: "Academia", maxLevel: 5, cost: { metal: 1000, polymers: 1000 }, time: 120, consumes: { energy: 5 } },
+        govtCenter: { name: "Centro Governamental", maxLevel: 1, cost: { credits: 10000, metal: 5000 }, time: 600 },
+        galacticMarket: { name: "Mercado Galáctico", maxLevel: 1, cost: { credits: 2000, metal: 1000 }, time: 180 },
     },
-    troops: {
-        infantry: { name: "Infantaria", icon: '🛡️', cost: { food: 25, wood: 10 }, time: 3, strongAgainst: 'cavalry' },
-        cavalry: { name: "Cavalaria", icon: '🐎', cost: { food: 50, wood: 20 }, time: 5, strongAgainst: 'archers' },
-        archers: { name: "Arqueiros", icon: '🏹', cost: { food: 30, wood: 25 }, time: 4, strongAgainst: 'infantry' }
+    ships: {
+        fighter: { name: "Caça", cost: { metal: 50, polymers: 25 }, time: 3, attack: 10, health: 5, strongAgainst: 'frigate' },
+        frigate: { name: "Fragata", cost: { metal: 100, polymers: 50 }, time: 5, attack: 5, health: 20, strongAgainst: 'cruiser' },
+        cruiser: { name: "Cruzador", cost: { metal: 200, polymers: 150 }, time: 8, attack: 25, health: 30, strongAgainst: 'fighter' },
+        corvette: { name: "Corveta", cost: { metal: 150, polymers: 100, tritium: 1 }, time: 6, attack: 15, health: 15, strongAgainst: null },
     },
-    research: {
-        agriculture: { name: "Agricultura", icon: '🌾', maxLevel: 5, cost: { gold: 1000 }, time: 60, description: "Aumenta a produção de comida em 10% por nível." },
-        logistics: { name: "Logística", icon: '📦', maxLevel: 5, cost: { gold: 1200 }, time: 90, description: "Aumenta a produção de madeira e pedra em 10% por nível." },
-        swordsmanship: { name: "Esgrima", icon: '⚔️', maxLevel: 5, cost: { gold: 2000 }, time: 180, description: "Aumenta o ataque da Infantaria em 5% por nível." },
-    },
-    heroes: {
-        reginald: { name: 'Sir Reginald', icon: '👑', description: 'Bônus de produção de comida.', bonus: { type: 'production', subType: 'food', value: 0.1 } },
-        elara: { name: 'Elara a Arquiteta', icon: '🏛️', description: 'Reduz o tempo de construção.', bonus: { type: 'time', subType: 'construction', value: -0.1 } },
-        grommash: { name: 'Grommash', icon: '斧', description: 'Aumenta o ataque de todas as tropas.', bonus: { type: 'attack', subType: 'all', value: 0.05 } }
+    policies: {
+        militarism: { name: "Militarismo", description: "+10% de ataque para todas as naves." },
+        industrialism: { name: "Industrialismo", description: "+15% de produção de Metal e Polímeros." },
+        technocracy: { name: "Tecnocracia", description: "-10% no custo e tempo de pesquisa." }
     },
     mapTargets: [
-        { name: 'Acampamento Bárbaro', level: 1, icon: '🏕️', troops: { infantry: 50 }, reward: { gold: 200, food: 300 } },
-        { name: 'Covil de Goblins', level: 2, icon: '👺', troops: { infantry: 100, archers: 50 }, reward: { gold: 500, wood: 400 } },
-        { name: 'Fortaleza Orc', level: 3, icon: '🏰', troops: { infantry: 200, cavalry: 100, archers: 150 }, reward: { gold: 1000, stone: 800 } },
-    ]
+        { name: 'Ninho Pirata', level: 1, fleet: { fighter: 50 }, reward: { credits: 200, metal: 300 } },
+        { name: 'Anomalia Vóide', level: 3, fleet: { frigate: 30, fighter: 100 }, reward: { credits: 500, polymers: 400 } },
+        { name: 'Cidadela Autômata', level: 5, fleet: { cruiser: 20, frigate: 50, fighter: 150 }, reward: { credits: 1000, tritium: 5 } },
+    ],
+    //... outras estruturas de dados como research, heroes(admirals)
 };
