@@ -105,3 +105,12 @@ export function purchaseUpgrade(upgradeId) {
 export function resetState() {
     initState(null);
 }
+
+// No objeto defaultState dentro de initState:
+const defaultState = {
+    cookies: 0,
+    cookiesPerClick: 1,
+    buildings: BUILDINGS_DATA.map(b => ({ ...b, count: 0 })),
+    upgrades: UPGRADES_DATA.map(u => ({ ...u, purchased: false })),
+    buffs: {} // <--- NOVO CAMPO PARA BUFFS
+};
