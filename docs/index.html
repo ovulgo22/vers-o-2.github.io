@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mini Kingdoms v4.0 - A Era dos Impérios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <div id="resources">
+                <span id="gold-resource" class="resource-display"></span>
+                <span id="food-resource" class="resource-display"></span>
+                <span id="wood-resource" class="resource-display"></span>
+                <span id="stone-resource" class="resource-display"></span>
+            </div>
+            <div id="troops-display">
+                <span id="infantry-resource" class="resource-display"></span>
+                <span id="cavalry-resource" class="resource-display"></span>
+                <span id="archer-resource" class="resource-display"></span>
+            </div>
+        </header>
+
+        <div id="timers-container">
+            </div>
+
+        <main id="main-view">
+            <div id="buildings-grid">
+                </div>
+
+            <div id="world-map-container">
+                <h3>Mapa do Mundo</h3>
+                <div id="world-map-grid">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-backdrop" class="hidden"></div>
+    <div id="generic-modal" class="modal hidden">
+        <h2 id="modal-title"></h2>
+        <div id="modal-content"></div>
+        <button class="close-modal-btn">Fechar</button>
+    </div>
+    <div id="battle-modal" class="modal hidden">
+        <h2 id="battle-modal-title">Ataque Tático</h2>
+        <div id="battle-modal-content"></div>
+        <button class="close-modal-btn">Cancelar</button>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="ui.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
