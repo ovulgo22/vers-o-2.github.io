@@ -1,0 +1,89 @@
+:root {
+    --primary-bg: rgba(22, 33, 62, 0.9);
+    --secondary-bg: rgba(15, 22, 42, 0.95);
+    --card-bg: rgba(31, 64, 104, 0.85);
+    --border-color: #0f3460;
+    --primary-accent: #e94560;
+    --gold-color: #ffd700;
+    --text-color: #f0f0f0;
+    --green: #3ddc84;
+    --red: #ff6b6b;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes resourcePop { 0% { transform: scale(1); } 50% { transform: scale(1.2); color: var(--green); } 100% { transform: scale(1); } }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 15px;
+    background-image: url('https://img.freepik.com/fotos-gratis/um-castelo-com-um-dragao-no-topo-dele_1340-23263.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    backdrop-filter: blur(4px);
+    color: var(--text-color);
+    animation: fadeIn 1s ease-in-out;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: auto;
+    background-color: var(--secondary-bg);
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border: 2px solid var(--border-color);
+}
+
+header { font-family: 'Cinzel', serif; }
+#resources, #troops-display { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+.resource-display { font-weight: bold; font-size: 1.2em; text-shadow: 1px 1px 3px #000; animation: none; }
+.resource-pop-animation { animation: resourcePop 0.5s ease; }
+
+#timers-container { display: flex; flex-direction: column; gap: 8px; margin: 15px 0; min-height: 30px; }
+.timer-item { background-color: var(--card-bg); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; box-shadow: inset 0 0 5px #000; }
+.timer-progress-bar { background-color: var(--border-color); border-radius: 5px; height: 5px; overflow: hidden; margin-top: 3px; }
+.timer-progress { background: linear-gradient(90deg, var(--green), var(--primary-accent)); height: 100%; width: 0%; transition: width 1s linear; }
+
+#main-view { display: grid; grid-template-columns: 3fr 1fr; gap: 20px; }
+#buildings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+
+.building { background-color: var(--card-bg); padding: 15px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; text-align: center; border: 1px solid var(--border-color); }
+.building:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.6); }
+.building h3 { margin: 0 0 10px 0; color: var(--gold-color); font-size: 1.2em; font-family: 'Cinzel', serif; }
+.building p { margin: 0 0 10px 0; font-size: 0.9em; flex-grow: 1; }
+
+button { background-color: var(--primary-accent); font-family: 'Cinzel', serif; color: #fff; border: none; padding: 12px 18px; border-radius: 5px; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: auto; text-transform: uppercase; }
+button:hover { background-color: #c73b52; box-shadow: 0 0 15px var(--primary-accent); }
+button:active { transform: scale(0.97); }
+button:disabled { background-color: #555; cursor: not-allowed; box-shadow: none; }
+
+#world-map-container { background-color: var(--card-bg); padding: 15px; border-radius: 10px; }
+#world-map-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+.map-tile { background-color: var(--secondary-bg); aspect-ratio: 1 / 1; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; }
+.map-tile:hover { transform: scale(1.05); }
+.map-tile .tile-icon { font-size: 2em; }
+.map-tile .tile-level { font-size: 0.8em; font-weight: bold; }
+
+/* MODAL STYLES */
+#modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 99; backdrop-filter: blur(5px); }
+.modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--secondary-bg); padding: 25px; border-radius: 15px; z-index: 100; width: 90%; max-width: 700px; border: 2px solid var(--primary-accent); box-shadow: 0 0 40px var(--primary-accent); animation: popIn 0.3s ease-out; }
+.modal h2 { text-align: center; margin-top: 0; color: var(--gold-color); font-family: 'Cinzel', serif; }
+.close-modal-btn { background-color: #777; margin-top: 20px; }
+.hidden { display: none !important; }
+
+#modal-content { max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-right: 10px; }
+.list-item { display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: center; background-color: var(--card-bg); padding: 10px; border-radius: 8px; }
+.list-item p { margin: 0; }
+.list-item .cost { font-size: 0.8em; }
+
+#battle-modal-content .army-input { display: flex; align-items: center; justify-content: space-between; background-color: var(--card-bg); padding: 10px; border-radius: 8px; }
+#battle-modal-content input[type="number"] { width: 80px; }
+
+@media (max-width: 900px) {
+    #main-view { grid-template-columns: 1fr; }
+    #world-map-container { order: -1; } /* Move o mapa para cima em telas pequenas */
+}
