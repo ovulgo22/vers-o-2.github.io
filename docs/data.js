@@ -1,33 +1,26 @@
 const GAME_DATA = {
-    // ... (todos os dados da v6.0)
-    
-    // NOVO: Sistema de Prestígio
-    singularity: {
-        building: { name: "Monólito da Singularidade", cost: { credits: 1e9, metal: 1e8, polymers: 1e8, tritium: 1e5 }, time: 24 * 3600 },
-        pointBonus: 0.05 // 5% de bônus em toda a produção por ponto de singularidade
+    CLICK_UPGRADES: {
+        'lens1': { name: "Lente Gravitacional I", cost: 10, power: 1, costIncrease: 1.5 },
+        'lens2': { name: "Foco de Partículas", cost: 100, power: 5, costIncrease: 1.6 },
+        'lens3': { name: "Canalizador de Fótons", cost: 1200, power: 25, costIncrease: 1.7 },
     },
-    
-    // NOVO: Recompensas de Login Diário
-    dailyRewards: [
-        { credits: 1000, metal: 1000 },
-        { credits: 2000, polymers: 1500 },
-        { tritium: 10 },
-        { credits: 5000, metal: 3000, polymers: 3000 },
-        { tritium: 25 },
-        // ... mais recompensas
+    GENERATORS: {
+        'probe': { name: "Sonda Coletora", baseCost: 15, baseProd: 0.1, costIncrease: 1.15 },
+        'drone': { name: "Enxame de Drones", baseCost: 100, baseProd: 1, costIncrease: 1.15 },
+        'starship': { name: "Nave Coletora", baseCost: 1100, baseProd: 8, costIncrease: 1.15 },
+        'dyson': { name: "Esfera de Dyson (Fragmento)", baseCost: 130000, baseProd: 120, costIncrease: 1.15 },
+    },
+    SKILL_TREE: {
+        's1': { name: "Memória Cósmica", cost: 1, description: "Comece cada Supernova com 1000 Poeira Estelar." },
+        's2': { name: "Eficiência de Coleta", cost: 2, description: "A produção de todos os coletores é permanentemente aumentada em 25%." },
+        's3': { name: "Lentes de Supernova", cost: 3, description: "+1% de produção por nível de Supernova." }
+    },
+    ARTIFACTS: [
+        { id: 'art001', name: 'O Coração do Pulsar', description: 'Adiciona 0.1% da sua Produção por Segundo total ao poder do seu clique.' },
+        { id: 'art002', name: 'Fragmento de Big Bang', description: 'Todos os custos de coletores são reduzidos em 1%.'}
     ],
-    
-    // NOVO: Contratos de Caça
-    bounties: [
-        { id: 'b001', title: "Limpeza de Setor", description: "Destrua 3 Ninhos Piratas.", target: { type: 'destroy', targetId: 'pirate_nest', count: 3 }, reward: { credits: 10000 } },
-        // ... mais contratos
-    ],
-    
-    // NOVO: Sons
-    sfx: {
-        click: 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-the-sound-pack-tree/tspt_generic_button_click_2.mp3',
-        upgrade: 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-the-sound-pack-tree/tspt_power_up_12.mp3',
-        resource: 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-the-sound-pack-tree/tspt_cash_register_coins_2.mp3'
-        // ... outros sons
+    ACHIEVEMENTS: {
+        'click1000': { description: "Clique 1.000 vezes.", condition: (state) => state.stats.totalClicks >= 1000, reward: { permanentMultiplier: 0.01 } },
+        'stardust1M': { description: "Acumule 1 Milhão de Poeira Estelar.", condition: (state) => state.stardust >= 1000000, reward: { permanentMultiplier: 0.05 } }
     }
 };
