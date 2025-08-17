@@ -8,9 +8,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <audio id="background-music" loop>
-        <source src="https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-out-of-this-world/ootw_ambient_space_drone_001.mp3" type="audio/mpeg">
-    </audio>
+    <div id="background-container">
+        <div class="star-field"></div>
+        <div class="planet planet-1"></div>
+        <div class="planet planet-2"></div>
+        <div class="planet planet-3"></div>
+    </div>
+
+    <audio id="background-music" loop></audio>
+    <audio id="sound-effect"></audio>
 
     <div id="game-container">
         <header>
@@ -19,19 +25,12 @@
                 <div id="xp-bar-container"><div id="xp-bar"></div></div>
             </div>
             <div id="resources">
-                <span id="credits-resource" class="resource-display" data-tooltip="Créditos Galácticos"></span>
-                <span id="nutrients-resource" class="resource-display" data-tooltip="Nutrientes"></span>
-                <span id="metal-resource" class="resource-display" data-tooltip="Metal"></span>
-                <span id="polymers-resource" class="resource-display" data-tooltip="Polímeros"></span>
-                <span id="tritium-resource" class="resource-display" data-tooltip="Cristais de Trítio"></span>
-                <span id="energy-resource" class="resource-display" data-tooltip="Energia (Produzida/Consumida)"></span>
-            </div>
-            <div id="fleet-display">
-                <span id="fighter-resource" class="resource-display" data-tooltip="Caças"></span>
-                <span id="frigate-resource" class="resource-display" data-tooltip="Fragatas"></span>
-                <span id="cruiser-resource" class="resource-display" data-tooltip="Cruzadores"></span>
-                <span id="corvette-resource" class="resource-display" data-tooltip="Corvetas"></span>
-                <span id="fleet-capacity" class="resource-display" data-tooltip="Capacidade da Frota"></span>
+                <div id="credits-resource" class="resource-display"></div>
+                <div id="nutrients-resource" class="resource-display"></div>
+                <div id="metal-resource" class="resource-display"></div>
+                <div id="polymers-resource" class="resource-display"></div>
+                <div id="tritium-resource" class="resource-display"></div>
+                <div id="energy-resource" class="resource-display"></div>
             </div>
         </header>
 
@@ -41,28 +40,47 @@
                     <h3>Filas Ativas</h3>
                     <div id="construction-queue"></div>
                     <div id="research-queue"></div>
+                    <div id="shipyard-queue"></div>
                 </div>
                 <div id="event-log-container" class="panel">
                     <h3>Log de Eventos</h3>
                     <ul id="event-log"></ul>
                 </div>
+                 <div class="panel settings-panel">
+                    <h3>Opções</h3>
+                    <div class="settings-row">
+                        <span>Música</span>
+                        <button id="toggle-music-btn">Ligada</button>
+                    </div>
+                    <div class="settings-row">
+                        <span>Sons</span>
+                        <button id="toggle-sfx-btn">Ligado</button>
+                    </div>
+                     <div class="settings-row">
+                        <button id="save-game-btn">Salvar</button>
+                        <button id="load-game-btn">Carregar</button>
+                    </div>
+                </div>
             </div>
             
             <main id="main-view">
-                <div id="buildings-grid">
-                    </div>
+                <div id="buildings-grid"></div>
             </main>
 
             <div id="right-panel">
+                 <div id="fleet-overview-panel" class="panel">
+                    <h3>Frota Estelar</h3>
+                    <div id="fleet-display"></div>
+                </div>
                 <div id="world-map-container" class="panel">
                     <h3>Mapa Estelar</h3>
-                    <div id="world-map-grid">
-                        </div>
+                    <div id="world-map-grid"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="floating-text-container"></div>
     <div id="modal-backdrop" class="hidden"></div>
     <div id="generic-modal" class="modal hidden">
         <h2 id="modal-title"></h2>
