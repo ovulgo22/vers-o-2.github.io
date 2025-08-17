@@ -2,93 +2,67 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Cosmic Empires</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starlight Clicker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="background-container">
-        <div class="star-field"></div>
-        <div class="planet planet-1"></div>
-        <div class="planet planet-2"></div>
-        <div class="planet planet-3"></div>
+    <div id="star-animation-container">
+        <div id="stars1"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
     </div>
 
-    <audio id="background-music" loop></audio>
-    <audio id="sound-effect"></audio>
-
     <div id="game-container">
-        <header>
-            <div id="player-status">
-                <span id="commander-level">Comandante Nv. 1</span>
-                <div id="xp-bar-container"><div id="xp-bar"></div></div>
+        <div id="left-column" class="column">
+            <div id="core-stats" class="panel">
+                <h2 id="stardust-display">0</h2>
+                <p>Poeira Estelar</p>
+                <h3 id="sps-display">0 /s</h3>
             </div>
-            <div id="resources">
-                <div id="credits-resource" class="resource-display"></div>
-                <div id="nutrients-resource" class="resource-display"></div>
-                <div id="metal-resource" class="resource-display"></div>
-                <div id="polymers-resource" class="resource-display"></div>
-                <div id="tritium-resource" class="resource-display"></div>
-                <div id="energy-resource" class="resource-display"></div>
+            <div id="core-container">
+                <div id="pulsar"></div>
+                <div id="click-effect-container"></div>
             </div>
-        </header>
+             <div id="click-upgrade-panel" class="panel">
+                <h3>Lentes Gravitacionais</h3>
+                <div id="click-upgrades-container"></div>
+            </div>
+        </div>
 
-        <div id="content-wrapper">
-            <div id="left-panel">
-                <div id="timers-container" class="panel">
-                    <h3>Filas Ativas</h3>
-                    <div id="construction-queue"></div>
-                    <div id="research-queue"></div>
-                    <div id="shipyard-queue"></div>
-                </div>
-                <div id="event-log-container" class="panel">
-                    <h3>Log de Eventos</h3>
-                    <ul id="event-log"></ul>
-                </div>
-                 <div class="panel settings-panel">
-                    <h3>Opções</h3>
-                    <div class="settings-row">
-                        <span>Música</span>
-                        <button id="toggle-music-btn">Ligada</button>
-                    </div>
-                    <div class="settings-row">
-                        <span>Sons</span>
-                        <button id="toggle-sfx-btn">Ligado</button>
-                    </div>
-                     <div class="settings-row">
-                        <button id="save-game-btn">Salvar</button>
-                        <button id="load-game-btn">Carregar</button>
-                    </div>
-                </div>
+        <div id="middle-column" class="column">
+            <div id="generators-panel" class="panel">
+                <h2>Coletores Automáticos</h2>
+                <div id="generators-container"></div>
             </div>
-            
-            <main id="main-view">
-                <div id="buildings-grid"></div>
-            </main>
+        </div>
 
-            <div id="right-panel">
-                 <div id="fleet-overview-panel" class="panel">
-                    <h3>Frota Estelar</h3>
-                    <div id="fleet-display"></div>
+        <div id="right-column" class="column">
+            <div class="panel">
+                <div id="tabs">
+                    <button class="tab-link active" data-tab="tab-supernova">Supernova</button>
+                    <button class="tab-link" data-tab="tab-skills">Habilidades</button>
+                    <button class="tab-link" data-tab="tab-artifacts">Artefatos</button>
+                    <button class="tab-link" data-tab="tab-achievements">Conquistas</button>
                 </div>
-                <div id="world-map-container" class="panel">
-                    <h3>Mapa Estelar</h3>
-                    <div id="world-map-grid"></div>
+
+                <div id="tab-content">
+                    <div id="tab-supernova" class="tab-pane active"></div>
+                    <div id="tab-skills" class="tab-pane"></div>
+                    <div id="tab-artifacts" class="tab-pane"></div>
+                    <div id="tab-achievements" class="tab-pane"></div>
                 </div>
             </div>
         </div>
     </div>
+    
+    <audio id="click-sound" preload="auto"></audio>
+    <audio id="buy-sound" preload="auto"></audio>
 
-    <div id="floating-text-container"></div>
-    <div id="modal-backdrop" class="hidden"></div>
-    <div id="generic-modal" class="modal hidden">
-        <h2 id="modal-title"></h2>
-        <div id="modal-content"></div>
-        <button class="close-modal-btn">Fechar</button>
-    </div>
-
+    <script src="format.js"></script>
     <script src="data.js"></script>
+    <script src="save.js"></script>
     <script src="ui.js"></script>
     <script src="main.js"></script>
 </body>
