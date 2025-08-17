@@ -18,12 +18,14 @@
     </div>
 
     <div id="fatal-error-overlay" class="hidden">
-        <h2>Ocorreu um Erro Crítico</h2>
-        <p>Não foi possível carregar o jogo. Tente limpar o cache do navegador ou o armazenamento local.</p>
-        <p>Erro: <span id="fatal-error-message"></span></p>
+        <div class="modal-content">
+            <h2>Ocorreu um Erro Crítico</h2>
+            <p>Não foi possível carregar o jogo. Tente limpar o cache do navegador ou o armazenamento local.</p>
+            <p>Erro: <span id="fatal-error-message"></span></p>
+        </div>
     </div>
 
-    <div id="news-ticker-container"><p id="news-ticker-content"></p></div>
+    <div id="news-ticker-container"><p id="news-ticker-content">Bem-vindo ao Cookie Simulator v2.0!</p></div>
     
     <div id="game-container">
         <div class="column" id="left-column">
@@ -35,10 +37,15 @@
                 </div>
             </div>
             <div id="stats-section">
-                 </div>
-            <div id="version-info">
-                <button id="options-open-button" class="icon-button" data-tooltip="Opções"></button>
-                <button id="prestige-open-button" class="icon-button" data-tooltip="Ascensão"></button>
+                 <h2>Estatísticas</h2>
+                 <p><strong>Tempo Jogado:</strong> <span id="stats-playtime">0s</span></p>
+                 <p><strong>Cliques Manuais:</strong> <span id="stats-manual-clicks">0</span></p>
+                 <p><strong>Total de Cookies (Sessão):</strong> <span id="stats-session-cookies">0</span></p>
+                 <p><strong>Conquistas:</strong> <span id="stats-achievements">0/0</span></p>
+            </div>
+            <div class="actions-section">
+                <button id="options-open-button" data-tooltip="Opções">Opções</button>
+                <button id="prestige-open-button" data-tooltip="Ascensão">Ascensão</button>
             </div>
         </div>
 
@@ -67,13 +74,49 @@
     <div id="options-modal" class="modal hidden">
         <div class="modal-content">
             <h2>Opções</h2>
-            <div id="options-form"></div>
-            <button id="options-save-button">Salvar e Fechar</button>
+            <div id="options-form">
+                <div class="option-item">
+                    <label for="theme-select">Tema:</label>
+                    <select id="theme-select" data-option="theme">
+                        <option value="theme-dark">Escuro</option>
+                        <option value="theme-light">Claro</option>
+                    </select>
+                </div>
+                <div class="option-item">
+                    <label for="music-volume">Volume da Música:</label>
+                    <input type="range" id="music-volume" min="0" max="1" step="0.05" data-option="musicVolume">
+                </div>
+                <div class="option-item">
+                    <label for="sfx-volume">Volume dos Efeitos:</label>
+                    <input type="range" id="sfx-volume" min="0" max="1" step="0.05" data-option="sfxVolume">
+                </div>
+                 <div class="option-item">
+                    <label for="particles-toggle">Mostrar Partículas:</label>
+                    <input type="checkbox" id="particles-toggle" data-option="showParticles">
+                </div>
+                <hr>
+                <div class="option-item">
+                    <button id="export-save-button">Exportar Save</button>
+                    <button id="import-save-button">Importar Save</button>
+                </div>
+                 <div class="option-item">
+                    <button id="hard-reset-button">RESETAR JOGO</button>
+                </div>
+            </div>
+            <button id="options-close-button">Fechar</button>
         </div>
     </div>
 
     <div id="prestige-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Ascensão</h2>
+            <p>Ascender irá resetar seu progresso atual, mas você ganhará Chips Celestiais para comprar melhorias permanentes.</p>
+            <p>Você ganhará: <strong id="prestige-chips-to-gain">0</strong> Chips Celestiais.</p>
+            <p>Total de Chips: <strong id="prestige-total-chips">0</strong> (Bônus: <span id="prestige-bonus">0</span>%)</p>
+            <button id="prestige-ascend-button">Ascender</button>
+            <button id="prestige-close-button">Fechar</button>
         </div>
+    </div>
 
     <script src="main.js" type="module"></script>
 </body>
