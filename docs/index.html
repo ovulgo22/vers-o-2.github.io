@@ -1,55 +1,443 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Simulator Deluxe</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍪</text></svg>">
+    <title>Beehive Construction Simulation</title>
+    <style>
+        body {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+        h1 {
+            margin-top: 0;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        }
+        #simulationContainer {
+            position: relative;
+            border: 2px solid #f1c40f;
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+            background-color: #34495e;
+        }
+        canvas {
+            display: block;
+        }
+        #controls {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px 25px;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            justify-content: center;
+        }
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+        }
+        label {
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        #colonyValue, #resourceValue {
+            font-weight: bold;
+            color: #f1c40f;
+            min-width: 30px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <header class="panel">
-            <h1>Cookie Simulator</h1>
-            <div id="stats-container">
-                <p>Cookies por segundo: <strong id="cps-stat">0</strong></p>
-            </div>
-        </header>
 
-        <main id="main-content">
-            <section id="left-panel" class="panel">
-                <div id="cookie-zone">
-                    <h2 id="cookie-counter">0</h2>
-                    <p>cookies</p>
-                    <div id="cookie-button-wrapper">
-                        <button id="cookie-button" aria-label="Clique para ganhar cookies">🍪</button>
-                    </div>
-                </div>
-            </section>
+    <h1>Beehive Construction Simulation</h1>
 
-            <section id="middle-panel" class="panel scrollable">
-                <h2><span class="icon">🏢</span>Prédios</h2>
-                <div id="buildings-container"></div>
-            </section>
-
-            <section id="right-panel" class="panel scrollable">
-                <h2><span class="icon">✨</span>Upgrades</h2>
-                <div id="upgrades-container"></div>
-            </section>
-        </main>
-        
-        <footer class="panel">
-             <button id="save-button" class="action-button">Salvar</button>
-             <button id="reset-button" class="action-button danger">Resetar</button>
-             <p id="save-feedback"></p>
-        </footer>
+    <div id="simulationContainer">
+        <canvas id="beehiveCanvas"></canvas>
     </div>
 
-    <div id="golden-cookie" class="hidden">🌟</div>
+    <div id="controls">
+        <div class="slider-group">
+            <label for="colonySize">Colony Size (Bees)</label>
+            <div>
+                <input type="range" id="colonySize" min="10" max="300" value="80">
+                <span id="colonyValue">80</span>
+            </div>
+        </div>
+        <div class="slider-group">
+            <label for="resourceAvailability">Resource Availability</label>
+            <div>
+                <input type="range" id="resourceAvailability" min="1" max="10" value="5">
+                <span id="resourceValue">5</span>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const canvas = document.getElementById('beehiveCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const colonySizeSlider = document.getElementById('colonySize');
+    const resourceAvailabilitySlider = document.getElementById('resourceAvailability');
+    const colonyValueSpan = document.getElementById('colonyValue');
+    const resourceValueSpan = document.getElementById('resourceValue');
+
+    let colonySize = parseInt(colonySizeSlider.value);
+    let resourceAvailability = parseInt(resourceAvailabilitySlider.value);
+
+    // --- Configuration ---
+    const HEX_SIZE = 20;
+    const BEE_SIZE = 4;
+    const BEE_SPEED = 1.5;
+
+    const COLORS = {
+        BACKGROUND: '#34495e',
+        EMPTY_OUTLINE: 'rgba(236, 240, 241, 0.1)',
+        CONSTRUCTION_OUTLINE: '#95a5a6',
+        BUILT_OUTLINE: '#f1c40f',
+        HONEY_FILL_START: '#f39c12',
+        HONEY_FILL_END: '#e67e22',
+        BEE: '#f1c40f',
+        BEE_WING: 'rgba(236, 240, 241, 0.7)'
+    };
+
+    // --- State Variables ---
+    let bees = [];
+    let grid = {}; // Using object for sparse grid: "q,r" -> { state, progress, ... }
+    let buildQueue = [];
+    let fillQueue = [];
+    let lastTime = 0;
+
+    // --- Canvas and Grid Setup ---
+    function setupCanvas() {
+        const container = document.getElementById('simulationContainer');
+        const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7, 900);
+        canvas.width = size;
+        canvas.height = size;
+        container.style.width = `${size}px`;
+        container.style.height = `${size}px`;
+    }
+
+    const hexWidth = Math.sqrt(3) * HEX_SIZE;
+    const hexHeight = 2 * HEX_SIZE;
+
+    // Convert axial hex coordinates to pixel coordinates
+    function hexToPixel(q, r) {
+        const x = HEX_SIZE * (Math.sqrt(3) * q + Math.sqrt(3) / 2 * r);
+        const y = HEX_SIZE * (3 / 2 * r);
+        return { x: x + canvas.width / 2, y: y + canvas.height / 2 };
+    }
+
+    // --- Drawing Functions ---
+    function drawHexagon(x, y, size, lineColor, fillColor = null, lineWidth = 1) {
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            const angle = (Math.PI / 3) * i;
+            const px = x + size * Math.cos(angle);
+            const py = y + size * Math.sin(angle);
+            if (i === 0) {
+                ctx.moveTo(px, py);
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
+        ctx.closePath();
+
+        if (fillColor) {
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+        }
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+    }
     
-    <script type="module" src="js/main.js"></script>
+    function drawHoney(x, y, size, progress) {
+        const honeyRadius = size * 0.85 * Math.sqrt(progress); // Fill based on area, not radius
+        if (honeyRadius < 1) return;
+
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, honeyRadius);
+        gradient.addColorStop(0, COLORS.HONEY_FILL_START);
+        gradient.addColorStop(1, COLORS.HONEY_FILL_END);
+
+        ctx.beginPath();
+        ctx.arc(x, y, honeyRadius, 0, 2 * Math.PI);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+    }
+
+    function drawBee(bee) {
+        ctx.fillStyle = COLORS.BEE;
+        ctx.beginPath();
+        ctx.arc(bee.x, bee.y, BEE_SIZE, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Simple wings
+        const wingAngle = Date.now() * 0.03 + bee.id; // Animate wings
+        const wingLength = BEE_SIZE * 1.5;
+        ctx.strokeStyle = COLORS.BEE_WING;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bee.x, bee.y);
+        ctx.lineTo(bee.x + Math.cos(wingAngle) * wingLength, bee.y + Math.sin(wingAngle) * wingLength);
+        ctx.moveTo(bee.x, bee.y);
+        ctx.lineTo(bee.x + Math.cos(wingAngle + Math.PI) * wingLength, bee.y + Math.sin(wingAngle + Math.PI) * wingLength);
+        ctx.stroke();
+    }
+
+    // --- Bee and Hive Logic ---
+    function createBee(id) {
+        return {
+            id: id,
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            targetX: canvas.width / 2,
+            targetY: canvas.height / 2,
+            state: 'wandering', // wandering, building, filling
+            task: null, // {q, r, progress}
+            path: []
+        };
+    }
+
+    const hexDirections = [
+        { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
+        { q: -1, r: 0 }, { q: -1, r: 1 }, { q: 0, r: 1 }
+    ];
+
+    function getNeighbors(q, r) {
+        return hexDirections.map(dir => ({ q: q + dir.q, r: r + dir.r }));
+    }
+
+    function updateBee(bee, dt) {
+        // Move towards target
+        const dx = bee.targetX - bee.x;
+        const dy = bee.targetY - bee.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > 1) {
+            bee.x += (dx / dist) * BEE_SPEED * (dt * 60);
+            bee.y += (dy / dist) * BEE_SPEED * (dt * 60);
+        }
+
+        // State machine
+        switch (bee.state) {
+            case 'wandering':
+                if (dist < 5) {
+                    findTask(bee);
+                }
+                break;
+            case 'building':
+                if (dist < 5) {
+                    bee.task.progress += 0.5 * (dt * 60); // Build speed
+                    const cell = grid[bee.task.key];
+                    cell.progress = bee.task.progress / 100;
+                    if (bee.task.progress >= 100) {
+                        cell.state = 'built';
+                        cell.progress = 0;
+                        fillQueue.push(cell.key);
+                        bee.state = 'wandering';
+                        bee.task = null;
+                    }
+                }
+                break;
+            case 'filling':
+                 if (dist < 5) {
+                    bee.task.progress += resourceAvailability * 0.2 * (dt * 60); // Resource dependent speed
+                    const cell = grid[bee.task.key];
+                    cell.progress = bee.task.progress / 100;
+                    if (bee.task.progress >= 100) {
+                        cell.state = 'full';
+                        cell.progress = 1;
+                        bee.state = 'wandering';
+                        bee.task = null;
+                    }
+                }
+                break;
+        }
+    }
+    
+    function findTask(bee) {
+        // Priority 1: Build a new cell
+        if (buildQueue.length > 0) {
+            const key = buildQueue.shift();
+            if (grid[key] && grid[key].state === 'empty') {
+                const cell = grid[key];
+                cell.state = 'constructing';
+                bee.state = 'building';
+                bee.task = { key: key, progress: 0 };
+                const { x, y } = hexToPixel(cell.q, cell.r);
+                bee.targetX = x;
+                bee.targetY = y;
+                return;
+            }
+        }
+
+        // Priority 2: Fill an existing cell
+        if (fillQueue.length > 0) {
+            const randomIndex = Math.floor(Math.random() * fillQueue.length);
+            const key = fillQueue[randomIndex];
+            const cell = grid[key];
+
+            if (cell && (cell.state === 'built' || cell.state === 'filling') && cell.progress < 1) {
+                // Remove from queue so another bee doesn't grab it immediately
+                fillQueue.splice(randomIndex, 1); 
+                
+                cell.state = 'filling';
+                bee.state = 'filling';
+                bee.task = { key: key, progress: cell.progress * 100 };
+                const { x, y } = hexToPixel(cell.q, cell.r);
+                bee.targetX = x;
+                bee.targetY = y;
+                return;
+            } else if (cell && cell.state === 'full') {
+                 // Clean up queue if cell is already full
+                fillQueue.splice(randomIndex, 1);
+            }
+        }
+        
+        // No tasks, just wander
+        bee.targetX = Math.random() * canvas.width;
+        bee.targetY = Math.random() * canvas.height;
+    }
+
+    function expandHive() {
+        const builtCells = Object.keys(grid).filter(k => grid[k].state === 'built' || grid[k].state === 'full');
+        if (builtCells.length === 0) return;
+
+        const randomBuiltCellKey = builtCells[Math.floor(Math.random() * builtCells.length)];
+        const {q, r} = grid[randomBuiltCellKey];
+
+        const neighbors = getNeighbors(q, r);
+        for (const neighbor of neighbors) {
+            const key = `${neighbor.q},${neighbor.r}`;
+            if (!grid[key]) {
+                grid[key] = {
+                    q: neighbor.q,
+                    r: neighbor.r,
+                    key: key,
+                    state: 'empty', // empty, constructing, built, filling, full
+                    progress: 0 // for construction or filling
+                };
+                if (!buildQueue.includes(key)) {
+                    buildQueue.push(key);
+                }
+            }
+        }
+    }
+
+    // --- Main Loop ---
+    function gameLoop(timestamp) {
+        const dt = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+
+        // Update logic
+        bees.forEach(bee => updateBee(bee, dt));
+        
+        // Periodically try to expand the hive
+        if (Math.random() < 0.05) { // Chance to expand each frame
+           expandHive();
+        }
+
+        // Drawing logic
+        ctx.fillStyle = COLORS.BACKGROUND;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw grid
+        for (const key in grid) {
+            const cell = grid[key];
+            const { x, y } = hexToPixel(cell.q, cell.r);
+
+            // Don't draw if off-screen
+            if (x < -HEX_SIZE || x > canvas.width + HEX_SIZE || y < -HEX_SIZE || y > canvas.height + HEX_SIZE) {
+                continue;
+            }
+
+            switch (cell.state) {
+                case 'empty':
+                    drawHexagon(x, y, HEX_SIZE, COLORS.EMPTY_OUTLINE);
+                    break;
+                case 'constructing':
+                    drawHexagon(x, y, HEX_SIZE, COLORS.CONSTRUCTION_OUTLINE, null, 1 + cell.progress * 2);
+                    break;
+                case 'built':
+                    drawHexagon(x, y, HEX_SIZE, COLORS.BUILT_OUTLINE, null, 2);
+                    break;
+                case 'filling':
+                    drawHexagon(x, y, HEX_SIZE, COLORS.BUILT_OUTLINE, null, 2);
+                    drawHoney(x, y, HEX_SIZE, cell.progress);
+                    break;
+                case 'full':
+                    drawHexagon(x, y, HEX_SIZE, COLORS.BUILT_OUTLINE, null, 2);
+                    drawHoney(x, y, HEX_SIZE, 1);
+                    break;
+            }
+        }
+        
+        // Draw bees
+        bees.forEach(drawBee);
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    // --- Initialization and Event Handlers ---
+    function init() {
+        setupCanvas();
+        
+        // Create initial central cell
+        grid = {};
+        const centerKey = "0,0";
+        grid[centerKey] = { q: 0, r: 0, key: centerKey, state: 'built', progress: 0 };
+        fillQueue = [centerKey];
+        expandHive();
+
+        // Create bees
+        bees = [];
+        for (let i = 0; i < colonySize; i++) {
+            bees.push(createBee(i));
+        }
+
+        // Sliders
+        colonySizeSlider.addEventListener('input', (e) => {
+            colonySize = parseInt(e.target.value);
+            colonyValueSpan.textContent = colonySize;
+
+            // Adjust bee count
+            while (bees.length < colonySize) {
+                bees.push(createBee(bees.length));
+            }
+            while (bees.length > colonySize) {
+                bees.pop();
+            }
+        });
+
+        resourceAvailabilitySlider.addEventListener('input', (e) => {
+            resourceAvailability = parseInt(e.target.value);
+            resourceValueSpan.textContent = resourceAvailability;
+        });
+
+        window.addEventListener('resize', init); // Re-initialize on resize
+
+        lastTime = performance.now();
+        requestAnimationFrame(gameLoop);
+    }
+
+    init();
+
+</script>
 </body>
 </html>
