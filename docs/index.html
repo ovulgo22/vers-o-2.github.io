@@ -3,43 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beehive Construction Simulation</title>
+    <title>Advanced Beehive Simulation</title>
     <style>
         body {
-            background-color: #2c3e50;
+            background-color: #1a2833;
             color: #ecf0f1;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             overflow: hidden;
         }
         h1 {
-            margin-top: 0;
+            margin: 5px 0 10px 0;
             font-weight: 300;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
         }
         #simulationContainer {
             position: relative;
             border: 2px solid #f1c40f;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
-            background-color: #34495e;
+            box-shadow: 0 0 25px rgba(241, 196, 15, 0.4);
+            background-color: #34495e; /* Fallback for no JS */
         }
-        canvas {
-            display: block;
+        #bgCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        #mainCanvas {
+            position: relative;
+            z-index: 1;
+        }
+        #stats {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(0,0,0,0.4);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            pointer-events: none;
+            z-index: 2;
+        }
+        #stats p {
+            margin: 2px 0;
+        }
+        #stats span {
+            font-weight: bold;
+            color: #f1c40f;
         }
         #controls {
             display: flex;
-            gap: 30px;
-            margin-top: 20px;
-            padding: 15px 25px;
+            gap: 20px;
+            margin-top: 15px;
+            padding: 10px 20px;
             background-color: rgba(0,0,0,0.2);
             border-radius: 10px;
-            width: 80%;
-            max-width: 800px;
+            width: 90%;
+            max-width: 900px;
             justify-content: center;
+            align-items: center;
         }
         .slider-group {
             display: flex;
@@ -48,395 +74,498 @@
             flex-grow: 1;
         }
         label {
-            margin-bottom: 8px;
-            font-size: 1em;
+            margin-bottom: 5px;
+            font-size: 0.9em;
         }
         input[type="range"] {
             width: 100%;
             cursor: pointer;
         }
-        #colonyValue, #resourceValue {
+        .value-display {
             font-weight: bold;
             color: #f1c40f;
             min-width: 30px;
             text-align: center;
         }
+        button {
+            padding: 8px 15px;
+            background-color: #f1c40f;
+            border: none;
+            color: #2c3e50;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #f39c12;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Beehive Construction Simulation</h1>
+    <h1>Advanced Beehive Simulation</h1>
 
     <div id="simulationContainer">
-        <canvas id="beehiveCanvas"></canvas>
+        <canvas id="bgCanvas"></canvas>
+        <canvas id="mainCanvas"></canvas>
+        <div id="stats"></div>
     </div>
 
     <div id="controls">
         <div class="slider-group">
-            <label for="colonySize">Colony Size (Bees)</label>
+            <label for="colonySize">Initial Colony Size</label>
             <div>
-                <input type="range" id="colonySize" min="10" max="300" value="80">
-                <span id="colonyValue">80</span>
+                <input type="range" id="colonySize" min="10" max="150" value="50">
+                <span class="value-display" id="colonyValue">50</span>
             </div>
         </div>
         <div class="slider-group">
             <label for="resourceAvailability">Resource Availability</label>
             <div>
                 <input type="range" id="resourceAvailability" min="1" max="10" value="5">
-                <span id="resourceValue">5</span>
+                <span class="value-display" id="resourceValue">5</span>
             </div>
         </div>
+        <button id="resetButton">Reset</button>
     </div>
 
 <script>
-    const canvas = document.getElementById('beehiveCanvas');
-    const ctx = canvas.getContext('2d');
-
+    // --- DOM ELEMENTS ---
+    const bgCanvas = document.getElementById('bgCanvas');
+    const mainCanvas = document.getElementById('mainCanvas');
+    const statsDiv = document.getElementById('stats');
     const colonySizeSlider = document.getElementById('colonySize');
-    const resourceAvailabilitySlider = document.getElementById('resourceAvailability');
+    const resourceSlider = document.getElementById('resourceAvailability');
     const colonyValueSpan = document.getElementById('colonyValue');
     const resourceValueSpan = document.getElementById('resourceValue');
+    const resetButton = document.getElementById('resetButton');
 
-    let colonySize = parseInt(colonySizeSlider.value);
-    let resourceAvailability = parseInt(resourceAvailabilitySlider.value);
+    const bgCtx = bgCanvas.getContext('2d');
+    const mainCtx = mainCanvas.getContext('2d');
 
-    // --- Configuration ---
-    const HEX_SIZE = 20;
-    const BEE_SIZE = 4;
-    const BEE_SPEED = 1.5;
-
-    const COLORS = {
-        BACKGROUND: '#34495e',
-        EMPTY_OUTLINE: 'rgba(236, 240, 241, 0.1)',
-        CONSTRUCTION_OUTLINE: '#95a5a6',
-        BUILT_OUTLINE: '#f1c40f',
-        HONEY_FILL_START: '#f39c12',
-        HONEY_FILL_END: '#e67e22',
-        BEE: '#f1c40f',
-        BEE_WING: 'rgba(236, 240, 241, 0.7)'
+    // --- CONFIGURATION ---
+    const CONFIG = {
+        HEX_SIZE: 18,
+        BEE_SIZE: 3.5,
+        BEE_SPEED: 2.0,
+        QUEEN_SPEED: 0.5,
+        BUILD_SPEED: 0.5,
+        TEND_SPEED: 0.4,
+        EGG_LAY_CHANCE: 0.005,
+        HATCH_TIME: 1000, // in progress units
+        COLORS: {
+            BG_LAYER1: '#2c3e50',
+            BG_LAYER2: 'rgba(52, 73, 94, 0.5)',
+            EMPTY_OUTLINE: 'rgba(236, 240, 241, 0.1)',
+            CONSTRUCTION_OUTLINE: '#95a5a6',
+            BUILT_OUTLINE: '#f1c40f',
+            HONEY_FILL_START: '#f39c12',
+            HONEY_FILL_END: '#e67e22',
+            BROOD_FILL: 'rgba(236, 240, 241, 0.8)',
+            BEE_BODY: '#f1c40f',
+            BEE_WING: 'rgba(236, 240, 241, 0.7)',
+            QUEEN_BODY: '#e74c3c',
+        }
     };
 
-    // --- State Variables ---
+    // --- GLOBAL STATE ---
+    let initialColonySize = parseInt(colonySizeSlider.value);
+    let resourceAvailability = parseInt(resourceSlider.value);
     let bees = [];
-    let grid = {}; // Using object for sparse grid: "q,r" -> { state, progress, ... }
-    let buildQueue = [];
-    let fillQueue = [];
+    let queen;
+    let grid = {};
+    let mousePos = { x: 0, y: 0 };
     let lastTime = 0;
-
-    // --- Canvas and Grid Setup ---
-    function setupCanvas() {
-        const container = document.getElementById('simulationContainer');
-        const size = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7, 900);
-        canvas.width = size;
-        canvas.height = size;
-        container.style.width = `${size}px`;
-        container.style.height = `${size}px`;
-    }
-
-    const hexWidth = Math.sqrt(3) * HEX_SIZE;
-    const hexHeight = 2 * HEX_SIZE;
-
-    // Convert axial hex coordinates to pixel coordinates
-    function hexToPixel(q, r) {
-        const x = HEX_SIZE * (Math.sqrt(3) * q + Math.sqrt(3) / 2 * r);
-        const y = HEX_SIZE * (3 / 2 * r);
-        return { x: x + canvas.width / 2, y: y + canvas.height / 2 };
-    }
-
-    // --- Drawing Functions ---
-    function drawHexagon(x, y, size, lineColor, fillColor = null, lineWidth = 1) {
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-            const angle = (Math.PI / 3) * i;
-            const px = x + size * Math.cos(angle);
-            const py = y + size * Math.sin(angle);
-            if (i === 0) {
-                ctx.moveTo(px, py);
-            } else {
-                ctx.lineTo(px, py);
-            }
-        }
-        ctx.closePath();
-
-        if (fillColor) {
-            ctx.fillStyle = fillColor;
-            ctx.fill();
-        }
-        ctx.strokeStyle = lineColor;
-        ctx.lineWidth = lineWidth;
-        ctx.stroke();
-    }
     
-    function drawHoney(x, y, size, progress) {
-        const honeyRadius = size * 0.85 * Math.sqrt(progress); // Fill based on area, not radius
-        if (honeyRadius < 1) return;
-
-        const gradient = ctx.createRadialGradient(x, y, 0, x, y, honeyRadius);
-        gradient.addColorStop(0, COLORS.HONEY_FILL_START);
-        gradient.addColorStop(1, COLORS.HONEY_FILL_END);
-
-        ctx.beginPath();
-        ctx.arc(x, y, honeyRadius, 0, 2 * Math.PI);
-        ctx.fillStyle = gradient;
-        ctx.fill();
+    // --- UTILITY FUNCTIONS ---
+    const hexWidth = Math.sqrt(3) * CONFIG.HEX_SIZE;
+    const hexHeight = 2 * CONFIG.HEX_SIZE;
+    function hexToPixel(q, r) {
+        const x = CONFIG.HEX_SIZE * (Math.sqrt(3) * q + Math.sqrt(3) / 2 * r);
+        const y = CONFIG.HEX_SIZE * (3 / 2 * r);
+        return { x: x + mainCanvas.width / 2, y: y + mainCanvas.height / 2 };
     }
-
-    function drawBee(bee) {
-        ctx.fillStyle = COLORS.BEE;
-        ctx.beginPath();
-        ctx.arc(bee.x, bee.y, BEE_SIZE, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // Simple wings
-        const wingAngle = Date.now() * 0.03 + bee.id; // Animate wings
-        const wingLength = BEE_SIZE * 1.5;
-        ctx.strokeStyle = COLORS.BEE_WING;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(bee.x, bee.y);
-        ctx.lineTo(bee.x + Math.cos(wingAngle) * wingLength, bee.y + Math.sin(wingAngle) * wingLength);
-        ctx.moveTo(bee.x, bee.y);
-        ctx.lineTo(bee.x + Math.cos(wingAngle + Math.PI) * wingLength, bee.y + Math.sin(wingAngle + Math.PI) * wingLength);
-        ctx.stroke();
-    }
-
-    // --- Bee and Hive Logic ---
-    function createBee(id) {
-        return {
-            id: id,
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            targetX: canvas.width / 2,
-            targetY: canvas.height / 2,
-            state: 'wandering', // wandering, building, filling
-            task: null, // {q, r, progress}
-            path: []
-        };
-    }
-
-    const hexDirections = [
-        { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 },
-        { q: -1, r: 0 }, { q: -1, r: 1 }, { q: 0, r: 1 }
-    ];
-
+    const hexDirections = [ { q: 1, r: 0 }, { q: 1, r: -1 }, { q: 0, r: -1 }, { q: -1, r: 0 }, { q: -1, r: 1 }, { q: 0, r: 1 } ];
     function getNeighbors(q, r) {
         return hexDirections.map(dir => ({ q: q + dir.q, r: r + dir.r }));
     }
 
-    function updateBee(bee, dt) {
-        // Move towards target
-        const dx = bee.targetX - bee.x;
-        const dy = bee.targetY - bee.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 1) {
-            bee.x += (dx / dist) * BEE_SPEED * (dt * 60);
-            bee.y += (dy / dist) * BEE_SPEED * (dt * 60);
+    // --- CLASSES ---
+    class HexCell {
+        constructor(q, r) {
+            this.q = q;
+            this.r = r;
+            this.key = `${q},${r}`;
+            this.state = 'empty'; // empty, constructing, built, filling, brood, full
+            this.progress = 0;
+            this.pulse = 0; // for animation
+            const { x, y } = hexToPixel(q, r);
+            this.x = x;
+            this.y = y;
         }
 
-        // State machine
-        switch (bee.state) {
-            case 'wandering':
-                if (dist < 5) {
-                    findTask(bee);
-                }
-                break;
-            case 'building':
-                if (dist < 5) {
-                    bee.task.progress += 0.5 * (dt * 60); // Build speed
-                    const cell = grid[bee.task.key];
-                    cell.progress = bee.task.progress / 100;
-                    if (bee.task.progress >= 100) {
-                        cell.state = 'built';
-                        cell.progress = 0;
-                        fillQueue.push(cell.key);
-                        bee.state = 'wandering';
-                        bee.task = null;
-                    }
-                }
-                break;
-            case 'filling':
-                 if (dist < 5) {
-                    bee.task.progress += resourceAvailability * 0.2 * (dt * 60); // Resource dependent speed
-                    const cell = grid[bee.task.key];
-                    cell.progress = bee.task.progress / 100;
-                    if (bee.task.progress >= 100) {
-                        cell.state = 'full';
-                        cell.progress = 1;
-                        bee.state = 'wandering';
-                        bee.task = null;
-                    }
-                }
-                break;
-        }
-    }
-    
-    function findTask(bee) {
-        // Priority 1: Build a new cell
-        if (buildQueue.length > 0) {
-            const key = buildQueue.shift();
-            if (grid[key] && grid[key].state === 'empty') {
-                const cell = grid[key];
-                cell.state = 'constructing';
-                bee.state = 'building';
-                bee.task = { key: key, progress: 0 };
-                const { x, y } = hexToPixel(cell.q, cell.r);
-                bee.targetX = x;
-                bee.targetY = y;
-                return;
+        draw(ctx) {
+            let outlineColor = CONFIG.COLORS.EMPTY_OUTLINE;
+            let lineWidth = 1;
+
+            switch (this.state) {
+                case 'constructing':
+                    outlineColor = CONFIG.COLORS.CONSTRUCTION_OUTLINE;
+                    lineWidth = 1 + this.progress * 2;
+                    break;
+                case 'built':
+                case 'filling':
+                case 'full':
+                case 'brood':
+                    outlineColor = CONFIG.COLORS.BUILT_OUTLINE;
+                    lineWidth = 2;
+                    break;
+            }
+
+            if (this.pulse > 0) {
+                lineWidth += this.pulse * 2;
+                outlineColor = 'white';
+                this.pulse -= 0.02;
+            }
+
+            // Draw Hexagon Outline
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i + Math.PI / 6;
+                const px = this.x + (CONFIG.HEX_SIZE - lineWidth) * Math.cos(angle);
+                const py = this.y + (CONFIG.HEX_SIZE - lineWidth) * Math.sin(angle);
+                ctx[i === 0 ? 'moveTo' : 'lineTo'](px, py);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = outlineColor;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+
+            // Draw Fill Content
+            if (this.state === 'filling' || this.state === 'full') {
+                const honeyRadius = (CONFIG.HEX_SIZE * 0.8) * Math.sqrt(this.progress);
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, honeyRadius);
+                gradient.addColorStop(0, CONFIG.COLORS.HONEY_FILL_START);
+                gradient.addColorStop(1, CONFIG.COLORS.HONEY_FILL_END);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, honeyRadius, 0, 2 * Math.PI);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            } else if (this.state === 'brood') {
+                 const broodRadius = (CONFIG.HEX_SIZE * 0.7) * (this.progress / CONFIG.HATCH_TIME);
+                 ctx.beginPath();
+                 ctx.arc(this.x, this.y, broodRadius, 0, 2 * Math.PI);
+                 ctx.fillStyle = CONFIG.COLORS.BROOD_FILL;
+                 ctx.fill();
             }
         }
+    }
 
-        // Priority 2: Fill an existing cell
-        if (fillQueue.length > 0) {
-            const randomIndex = Math.floor(Math.random() * fillQueue.length);
-            const key = fillQueue[randomIndex];
-            const cell = grid[key];
+    class Bee {
+        constructor(id, isQueen = false) {
+            this.id = id;
+            this.isQueen = isQueen;
+            this.x = mainCanvas.width / 2;
+            this.y = mainCanvas.height / 2;
+            this.target = { x: this.x, y: this.y };
+            this.state = 'wandering';
+            this.task = null; // { cell, progress }
+            this.cargo = 0; // nectar cargo
+            this.speed = isQueen ? CONFIG.QUEEN_SPEED : CONFIG.BEE_SPEED;
+            this.size = isQueen ? CONFIG.BEE_SIZE * 1.5 : CONFIG.BEE_SIZE;
+            this.color = isQueen ? CONFIG.COLORS.QUEEN_BODY : CONFIG.COLORS.BEE_BODY;
+        }
 
-            if (cell && (cell.state === 'built' || cell.state === 'filling') && cell.progress < 1) {
-                // Remove from queue so another bee doesn't grab it immediately
-                fillQueue.splice(randomIndex, 1); 
+        update(dt) {
+            // Movement
+            const dx = this.target.x - this.x;
+            const dy = this.target.y - this.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist > 1) {
+                this.x += (dx / dist) * this.speed * (dt * 60);
+                this.y += (dy / dist) * this.speed * (dt * 60);
+            }
+
+            if (this.isQueen) this.updateQueen(dist);
+            else this.updateWorker(dist, dt);
+        }
+        
+        updateWorker(dist, dt) {
+            switch (this.state) {
+                case 'wandering':
+                    if (dist < 5) this.findTask();
+                    break;
                 
-                cell.state = 'filling';
-                bee.state = 'filling';
-                bee.task = { key: key, progress: cell.progress * 100 };
-                const { x, y } = hexToPixel(cell.q, cell.r);
-                bee.targetX = x;
-                bee.targetY = y;
-                return;
-            } else if (cell && cell.state === 'full') {
-                 // Clean up queue if cell is already full
-                fillQueue.splice(randomIndex, 1);
+                case 'gathering':
+                    if (dist < 10) { // Reached edge of screen
+                        this.cargo += resourceAvailability * 0.5 * (dt * 60);
+                        if (this.cargo >= 100) {
+                            this.cargo = 100;
+                            this.state = 'wandering';
+                        }
+                    }
+                    break;
+
+                case 'building':
+                case 'tending':
+                case 'filling':
+                    if (dist < 5) {
+                        const cell = this.task.cell;
+                        let rate = 1;
+                        if (this.state === 'building') rate = CONFIG.BUILD_SPEED;
+                        if (this.state === 'tending') rate = CONFIG.TEND_SPEED;
+                        if (this.state === 'filling') {
+                            const amount = Math.min(this.cargo, 1 * (dt*60));
+                            cell.progress += amount / 100;
+                            this.cargo -= amount;
+                            if (this.cargo <= 0) this.state = 'wandering';
+                        } else {
+                            cell.progress += rate * (dt * 60);
+                        }
+                        
+                        // Task completion
+                        if (this.state === 'building' && cell.progress >= 100) {
+                            cell.state = 'built';
+                            cell.progress = 0;
+                            cell.pulse = 1;
+                            this.state = 'wandering';
+                        } else if (this.state === 'tending' && cell.progress >= CONFIG.HATCH_TIME) {
+                            cell.state = 'built';
+                            cell.progress = 0;
+                            cell.pulse = 1;
+                            this.hatchBee();
+                            this.state = 'wandering';
+                        } else if (this.state === 'filling' && cell.progress >= 1) {
+                            cell.state = 'full';
+                            cell.progress = 1;
+                            cell.pulse = 1;
+                            this.state = 'wandering';
+                        }
+                    }
+                    break;
             }
         }
         
-        // No tasks, just wander
-        bee.targetX = Math.random() * canvas.width;
-        bee.targetY = Math.random() * canvas.height;
+        updateQueen(dist) {
+             if (dist < 5) {
+                // Lay egg in an empty built cell
+                const builtCells = Object.values(grid).filter(c => c.state === 'built');
+                if (builtCells.length > 0 && Math.random() < CONFIG.EGG_LAY_CHANCE) {
+                    const cell = builtCells[Math.floor(Math.random() * builtCells.length)];
+                    cell.state = 'brood';
+                    cell.progress = 0;
+                }
+                // Wander near hive center
+                const angle = Math.random() * 2 * Math.PI;
+                const radius = Math.random() * 150;
+                this.target = { x: mainCanvas.width / 2 + Math.cos(angle) * radius, y: mainCanvas.height / 2 + Math.sin(angle) * radius };
+            }
+        }
+        
+        findTask() {
+            // Priority 1: Gather resources if empty
+            if (this.cargo <= 0) {
+                this.state = 'gathering';
+                const angle = Math.random() * 2 * Math.PI;
+                this.target = { 
+                    x: mainCanvas.width/2 + Math.cos(angle) * (mainCanvas.width), 
+                    y: mainCanvas.height/2 + Math.sin(angle) * (mainCanvas.height) 
+                };
+                return;
+            }
+
+            // Task priorities
+            const tasks = [
+                () => Object.values(grid).find(c => c.state === 'brood' && c.progress < CONFIG.HATCH_TIME), // Tend brood
+                () => Object.values(grid).find(c => c.state === 'constructing'), // Help build
+                () => Object.values(grid).find(c => c.state === 'built' || c.state === 'filling' && c.progress < 1), // Fill cell
+                () => Object.values(grid).find(c => c.state === 'empty'), // Start new construction
+            ];
+            
+            const taskStates = ['tending', 'building', 'filling', 'building'];
+            
+            for(let i = 0; i < tasks.length; i++) {
+                const cell = tasks[i]();
+                if(cell) {
+                    this.state = taskStates[i];
+                    if (this.state === 'building' && cell.state === 'empty') cell.state = 'constructing';
+                    if (this.state === 'filling' && cell.state === 'built') cell.state = 'filling';
+                    
+                    this.task = { cell: cell };
+                    this.target = { x: cell.x, y: cell.y };
+                    return;
+                }
+            }
+            
+            // Wander if no tasks
+            this.target = { x: Math.random() * mainCanvas.width, y: Math.random() * mainCanvas.height };
+        }
+        
+        hatchBee() {
+            if (bees.length < 300) { // Cap colony size for performance
+                bees.push(new Bee(bees.length));
+            }
+        }
+
+        draw(ctx) {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+
+            // Wings
+            const wingAngle = Date.now() * 0.05 + this.id;
+            const wingLength = this.size * 1.8;
+            ctx.strokeStyle = CONFIG.COLORS.BEE_WING;
+            ctx.lineWidth = this.isQueen ? 3 : 2;
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            ctx.lineTo(Math.cos(wingAngle) * wingLength, Math.sin(wingAngle) * wingLength);
+            ctx.moveTo(0,0);
+            ctx.lineTo(Math.cos(wingAngle + Math.PI) * wingLength, Math.sin(wingAngle + Math.PI) * wingLength);
+            ctx.stroke();
+
+            // Body
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, this.size * 1.2, this.size, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.restore();
+        }
     }
 
+    // --- SIMULATION LOGIC ---
     function expandHive() {
-        const builtCells = Object.keys(grid).filter(k => grid[k].state === 'built' || grid[k].state === 'full');
+        const builtCells = Object.values(grid).filter(c => c.state !== 'empty' && c.state !== 'constructing');
         if (builtCells.length === 0) return;
 
-        const randomBuiltCellKey = builtCells[Math.floor(Math.random() * builtCells.length)];
-        const {q, r} = grid[randomBuiltCellKey];
-
-        const neighbors = getNeighbors(q, r);
-        for (const neighbor of neighbors) {
-            const key = `${neighbor.q},${neighbor.r}`;
+        const cell = builtCells[Math.floor(Math.random() * builtCells.length)];
+        const neighbors = getNeighbors(cell.q, cell.r);
+        for (const n of neighbors) {
+            const key = `${n.q},${n.r}`;
             if (!grid[key]) {
-                grid[key] = {
-                    q: neighbor.q,
-                    r: neighbor.r,
-                    key: key,
-                    state: 'empty', // empty, constructing, built, filling, full
-                    progress: 0 // for construction or filling
-                };
-                if (!buildQueue.includes(key)) {
-                    buildQueue.push(key);
-                }
+                grid[key] = new HexCell(n.q, n.r);
             }
         }
     }
 
-    // --- Main Loop ---
+    function updateStats() {
+        const cellCount = Object.keys(grid).length;
+        const honeyProgress = Object.values(grid)
+            .filter(c => c.state === 'filling' || c.state === 'full')
+            .reduce((sum, c) => sum + c.progress, 0);
+        const broodCount = Object.values(grid).filter(c => c.state === 'brood').length;
+
+        statsDiv.innerHTML = `
+            <p>Bees: <span>${bees.length}</span></p>
+            <p>Cells: <span>${cellCount}</span></p>
+            <p>Honey Units: <span>${Math.floor(honeyProgress)}</span></p>
+            <p>Brood: <span>${broodCount}</span></p>
+        `;
+    }
+
+    // --- DRAWING ---
+    function drawBackground() {
+        bgCtx.fillStyle = CONFIG.COLORS.BG_LAYER1;
+        bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+        
+        const parallaxFactor = 0.02;
+        const offsetX = (mousePos.x - bgCanvas.width / 2) * parallaxFactor;
+        const offsetY = (mousePos.y - bgCanvas.height / 2) * parallaxFactor;
+
+        bgCtx.fillStyle = CONFIG.COLORS.BG_LAYER2;
+        for (let i = 0; i < 50; i++) {
+            const x = (i * 37) % bgCanvas.width + offsetX;
+            const y = (i * 91) % bgCanvas.height + offsetY;
+            bgCtx.beginPath();
+            bgCtx.arc(x, y, i % 5 + 1, 0, 2 * Math.PI);
+            bgCtx.fill();
+        }
+    }
+
+    function drawVignette() {
+        const gradient = mainCtx.createRadialGradient(
+            mainCanvas.width / 2, mainCanvas.height / 2, mainCanvas.width / 3,
+            mainCanvas.width / 2, mainCanvas.height / 2, mainCanvas.width / 2 + 100
+        );
+        gradient.addColorStop(0, 'rgba(0,0,0,0)');
+        gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
+        mainCtx.fillStyle = gradient;
+        mainCtx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
+    }
+
+    // --- MAIN LOOP ---
     function gameLoop(timestamp) {
         const dt = (timestamp - lastTime) / 1000;
         lastTime = timestamp;
 
-        // Update logic
-        bees.forEach(bee => updateBee(bee, dt));
+        // Update
+        [...bees, queen].forEach(b => b.update(dt));
+        if (Math.random() < 0.1) expandHive();
+        updateStats();
+
+        // Draw
+        mainCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+        drawBackground();
         
-        // Periodically try to expand the hive
-        if (Math.random() < 0.05) { // Chance to expand each frame
-           expandHive();
-        }
-
-        // Drawing logic
-        ctx.fillStyle = COLORS.BACKGROUND;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw grid
-        for (const key in grid) {
-            const cell = grid[key];
-            const { x, y } = hexToPixel(cell.q, cell.r);
-
-            // Don't draw if off-screen
-            if (x < -HEX_SIZE || x > canvas.width + HEX_SIZE || y < -HEX_SIZE || y > canvas.height + HEX_SIZE) {
-                continue;
-            }
-
-            switch (cell.state) {
-                case 'empty':
-                    drawHexagon(x, y, HEX_SIZE, COLORS.EMPTY_OUTLINE);
-                    break;
-                case 'constructing':
-                    drawHexagon(x, y, HEX_SIZE, COLORS.CONSTRUCTION_OUTLINE, null, 1 + cell.progress * 2);
-                    break;
-                case 'built':
-                    drawHexagon(x, y, HEX_SIZE, COLORS.BUILT_OUTLINE, null, 2);
-                    break;
-                case 'filling':
-                    drawHexagon(x, y, HEX_SIZE, COLORS.BUILT_OUTLINE, null, 2);
-                    drawHoney(x, y, HEX_SIZE, cell.progress);
-                    break;
-                case 'full':
-                    drawHexagon(x, y, HEX_SIZE, COLORS.BUILT_OUTLINE, null, 2);
-                    drawHoney(x, y, HEX_SIZE, 1);
-                    break;
-            }
-        }
-        
-        // Draw bees
-        bees.forEach(drawBee);
+        Object.values(grid).forEach(cell => cell.draw(mainCtx));
+        [...bees, queen].forEach(b => b.draw(mainCtx));
+        drawVignette();
 
         requestAnimationFrame(gameLoop);
     }
 
-    // --- Initialization and Event Handlers ---
+    // --- INITIALIZATION ---
+    function setup() {
+        const container = document.getElementById('simulationContainer');
+        const size = Math.min(window.innerWidth * 0.95, window.innerHeight * 0.8, 1000);
+        container.style.width = `${size}px`;
+        container.style.height = `${size}px`;
+        bgCanvas.width = mainCanvas.width = size;
+        bgCanvas.height = mainCanvas.height = size;
+    }
+
     function init() {
-        setupCanvas();
-        
-        // Create initial central cell
         grid = {};
-        const centerKey = "0,0";
-        grid[centerKey] = { q: 0, r: 0, key: centerKey, state: 'built', progress: 0 };
-        fillQueue = [centerKey];
-        expandHive();
-
-        // Create bees
+        const centerCell = new HexCell(0, 0);
+        centerCell.state = 'built';
+        grid[centerCell.key] = centerCell;
+        
         bees = [];
-        for (let i = 0; i < colonySize; i++) {
-            bees.push(createBee(i));
+        for (let i = 0; i < initialColonySize; i++) {
+            bees.push(new Bee(i));
         }
+        queen = new Bee(999, true);
 
-        // Sliders
-        colonySizeSlider.addEventListener('input', (e) => {
-            colonySize = parseInt(e.target.value);
-            colonyValueSpan.textContent = colonySize;
-
-            // Adjust bee count
-            while (bees.length < colonySize) {
-                bees.push(createBee(bees.length));
-            }
-            while (bees.length > colonySize) {
-                bees.pop();
-            }
-        });
-
-        resourceAvailabilitySlider.addEventListener('input', (e) => {
-            resourceAvailability = parseInt(e.target.value);
-            resourceValueSpan.textContent = resourceAvailability;
-        });
-
-        window.addEventListener('resize', init); // Re-initialize on resize
-
-        lastTime = performance.now();
-        requestAnimationFrame(gameLoop);
+        expandHive();
     }
 
+    // --- EVENT LISTENERS ---
+    colonySizeSlider.addEventListener('input', e => {
+        initialColonySize = parseInt(e.target.value);
+        colonyValueSpan.textContent = initialColonySize;
+    });
+    resourceSlider.addEventListener('input', e => {
+        resourceAvailability = parseInt(e.target.value);
+        resourceValueSpan.textContent = resourceAvailability;
+    });
+    resetButton.addEventListener('click', init);
+    window.addEventListener('resize', () => {
+        setup();
+        drawBackground(); // Redraw static parts on resize
+    });
+    document.addEventListener('mousemove', e => {
+        const rect = bgCanvas.getBoundingClientRect();
+        mousePos.x = e.clientX - rect.left;
+        mousePos.y = e.clientY - rect.top;
+    });
+
+    // --- START ---
+    setup();
     init();
+    lastTime = performance.now();
+    requestAnimationFrame(gameLoop);
 
 </script>
 </body>
