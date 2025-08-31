@@ -2,23 +2,15 @@
 :root {
     --bg-color: #0d1117;
     --sidebar-bg: #161b22;
-    --content-bg: #0d1117;
     --border-color: #30363d;
     --text-color: #c9d1d9;
     --text-secondary: #8b949e;
     --accent-color: #58a6ff;
     --code-bg: #161b22;
-    --code-text: #c9d1d9;
     --font-primary: 'Inter', sans-serif;
     --font-code: 'Roboto Mono', monospace;
 }
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
     font-family: var(--font-primary);
     background-color: var(--bg-color);
@@ -26,48 +18,42 @@ body {
     line-height: 1.6;
 }
 
+/* Fundo Animado */
+#matrix-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
 /* Cabeçalho */
 header {
     text-align: center;
     padding: 40px 20px;
     border-bottom: 1px solid var(--border-color);
+    background: rgba(13, 17, 23, 0.8);
+    backdrop-filter: blur(5px);
 }
-
-header h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--text-color);
-    margin-bottom: 10px;
-}
-
-header p {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-}
+header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+header p { font-size: 1.1rem; color: var(--text-secondary); }
 
 /* Layout Principal */
-.container {
-    display: flex;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
+.container { display: flex; max-width: 1400px; margin: 0 auto; }
 .sidebar {
     width: 280px;
     flex-shrink: 0;
     border-right: 1px solid var(--border-color);
-    height: calc(100vh - 137px); /* Viewport height - header height */
+    height: calc(100vh - 137px);
     position: sticky;
     top: 0;
     overflow-y: auto;
     padding: 20px 0;
+    background: rgba(13, 17, 23, 0.8);
+    backdrop-filter: blur(5px);
 }
-
-.sidebar nav ul {
-    list-style: none;
-    padding: 0 20px;
-}
-
+.sidebar nav ul { list-style: none; padding: 0 20px; }
 .sidebar nav a {
     display: block;
     color: var(--text-secondary);
@@ -77,151 +63,75 @@ header p {
     transition: background-color 0.2s ease, color 0.2s ease;
     font-weight: 600;
 }
+.sidebar nav a:hover { background-color: rgba(139, 148, 158, 0.1); }
+.sidebar nav a.active { color: var(--accent-color); background-color: rgba(88, 166, 255, 0.1); }
 
-.sidebar nav a:hover {
-    background-color: rgba(139, 148, 158, 0.1);
-}
-
-.sidebar nav a.active {
-    color: var(--accent-color);
-    background-color: rgba(88, 166, 255, 0.1);
-}
-
-/* Área de Conteúdo Principal */
-#content-area {
-    padding: 40px;
-    flex-grow: 1;
-    max-width: calc(100% - 280px);
-}
-
-main h2 {
-    font-size: 2rem;
-    color: var(--text-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
-main p, main li {
-    font-size: 1rem;
-    margin-bottom: 1.2em;
-    color: var(--text-secondary);
-}
-
-main strong {
-    color: var(--text-color);
-    font-weight: 600;
-}
-
-main ol, main ul {
-    padding-left: 20px;
-}
-
-main a {
-    color: var(--accent-color);
-    text-decoration: none;
-}
-
-main a:hover {
-    text-decoration: underline;
-}
-
-main pre {
+/* Área de Conteúdo */
+#content-area { padding: 40px; flex-grow: 1; max-width: calc(100% - 280px); }
+main h2 { font-size: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+main h4 { font-size: 1.2rem; margin-top: 30px; margin-bottom: 15px; font-weight: 600; }
+main p, main li { font-size: 1rem; margin-bottom: 1.2em; color: var(--text-secondary); }
+main strong { color: var(--text-color); font-weight: 600; }
+main ol, main ul { padding-left: 20px; }
+main a { color: var(--accent-color); text-decoration: none; }
+main a:hover { text-decoration: underline; }
+main blockquote {
     background-color: var(--code-bg);
-    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-color);
     border-radius: 6px;
     padding: 16px;
-    overflow-x: auto;
     margin: 20px 0;
+    font-style: italic;
 }
 
-main code {
-    font-family: var(--font-code);
-    color: var(--code-text);
-    font-size: 0.9rem;
+/* Estilos da Calculadora */
+.calculator {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: var(--sidebar-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
 }
-
-/* Efeito Glitch no Título */
-.glitch {
-    position: relative;
-    color: #fff;
-    animation: glitch-skew 1s infinite linear alternate-reverse;
-}
-.glitch::before,
-.glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
+.input-group { margin-bottom: 15px; }
+.input-group label { display: block; margin-bottom: 5px; color: var(--text-secondary); }
+.input-group input {
     width: 100%;
-    height: 100%;
+    padding: 8px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-color);
+    font-family: var(--font-code);
 }
-.glitch::before {
-    left: 2px;
-    text-shadow: -2px 0 #ff00c1;
-    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+.calculator button {
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 6px;
+    color: #0d1117;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
-.glitch::after {
-    left: -2px;
-    text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
-    animation: glitch-anim-2 2s infinite linear alternate-reverse;
-}
+.calculator button:hover { background-color: #79c0ff; }
+.result { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+.result h3 { font-size: 1.2rem; }
+#sim-prob { font-family: var(--font-code); color: var(--accent-color); }
 
-@keyframes glitch-anim-1 {
-    0% { clip-path: inset(5% 0 9% 0); }
-    20% { clip-path: inset(45% 0 54% 0); }
-    40% { clip-path: inset(19% 0 2% 0); }
-    60% { clip-path: inset(80% 0 10% 0); }
-    80% { clip-path: inset(33% 0 45% 0); }
-    100% { clip-path: inset(6% 0 78% 0); }
-}
-
-@keyframes glitch-anim-2 {
-    0% { clip-path: inset(79% 0 1% 0); }
-    20% { clip-path: inset(21% 0 33% 0); }
-    40% { clip-path: inset(44% 0 46% 0); }
-    60% { clip-path: inset(55% 0 10% 0); }
-    80% { clip-path: inset(0% 0 90% 0); }
-    100% { clip-path: inset(51% 0 3% 0); }
-}
-
-@keyframes glitch-skew {
-    0% { transform: skew(0deg); }
-    10% { transform: skew(1deg); }
-    20% { transform: skew(0deg); }
-    80% { transform: skew(0deg); }
-    90% { transform: skew(-1deg); }
-    100% { transform: skew(0deg); }
-}
-
+/* Efeito Glitch */
+.glitch { position: relative; animation: glitch-skew 1s infinite linear alternate-reverse; }
+.glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.glitch::before { left: 2px; text-shadow: -2px 0 #ff00c1; animation: glitch-anim-1 2s infinite linear alternate-reverse; }
+.glitch::after { left: -2px; text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1; animation: glitch-anim-2 2s infinite linear alternate-reverse; }
+@keyframes glitch-anim-1 { 0% { clip-path: inset(5% 0 9% 0); } 20% { clip-path: inset(45% 0 54% 0); } 40% { clip-path: inset(19% 0 2% 0); } 60% { clip-path: inset(80% 0 10% 0); } 80% { clip-path: inset(33% 0 45% 0); } 100% { clip-path: inset(6% 0 78% 0); } }
+@keyframes glitch-anim-2 { 0% { clip-path: inset(79% 0 1% 0); } 20% { clip-path: inset(21% 0 33% 0); } 40% { clip-path: inset(44% 0 46% 0); } 60% { clip-path: inset(55% 0 10% 0); } 80% { clip-path: inset(0% 0 90% 0); } 100% { clip-path: inset(51% 0 3% 0); } }
+@keyframes glitch-skew { 0% { transform: skew(0deg); } 10% { transform: skew(1deg); } 20% { transform: skew(0deg); } 80% { transform: skew(0deg); } 90% { transform: skew(-1deg); } 100% { transform: skew(0deg); } }
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        padding: 10px;
-    }
-
-    .sidebar nav ul {
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-    
-    .sidebar nav li {
-        flex-shrink: 0;
-    }
-
-    #content-area {
-        max-width: 100%;
-        padding: 20px;
-    }
+    .container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border-color); padding: 10px; }
+    .sidebar nav ul { display: flex; overflow-x: auto; padding-bottom: 10px; }
+    .sidebar nav li { flex-shrink: 0; }
+    #content-area { max-width: 100%; padding: 20px; }
 }
