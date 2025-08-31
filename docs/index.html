@@ -3,116 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tridimensionalismo científico: conceitos, exemplos, pesquisas e aplicações práticas em 3D.">
     <title>Tridimensionalismo Científico</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Reset básico e fontes */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-        header {
-            background: linear-gradient(90deg, #4facfe, #00f2fe);
-            color: white;
-            padding: 2rem 1rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        header p {
-            font-size: 1.2rem;
-        }
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        section {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 1rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #4facfe;
-            margin-bottom: 1rem;
-        }
-        p {
-            margin-bottom: 1rem;
-        }
-        .example {
-            background: #eef7ff;
-            padding: 1rem;
-            border-left: 5px solid #4facfe;
-            margin-bottom: 1rem;
-            border-radius: 5px;
-        }
-        .dimension-box {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .dimension {
-            flex: 1 1 200px;
-            background: #fff3e6;
-            padding: 1rem;
-            border-radius: 10px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .dimension:hover {
-            transform: translateY(-5px);
-        }
-        footer {
-            text-align: center;
-            padding: 2rem 1rem;
-            background: #333;
-            color: white;
-            margin-top: 2rem;
-        }
-        a.external {
-            color: #4facfe;
-            text-decoration: none;
-        }
-        a.external:hover {
-            text-decoration: underline;
-        }
-        /* Animação suave para seções */
-        section {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Reset e fonte */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; scroll-behavior: smooth; }
+        main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        
+        /* Header */
+        header { background: linear-gradient(90deg, #4facfe, #00f2fe); color: white; padding: 2rem 1rem; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        header p { font-size: 1.2rem; }
+        nav { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap; }
+        nav a { color: white; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        nav a:hover, nav a.active { text-decoration: underline; color: #ffdd59; }
+
+        /* Seções */
+        section { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); margin-bottom: 2rem;
+                 opacity: 0; transform: translateY(20px) scale(0.95); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        section.visible { opacity: 1; transform: translateY(0) scale(1); }
+        h2 { color: #4facfe; margin-bottom: 1rem; }
+        p { margin-bottom: 1rem; }
+
+        /* Dimensões */
+        .dimension-box { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+        .dimension { flex: 1 1 200px; background: #fff3e6; padding: 1rem; border-radius: 10px; text-align: center; transition: transform 0.3s; }
+        .dimension:hover { transform: translateY(-5px); }
+
+        /* Exemplos */
+        .example { background: #eef7ff; padding: 1rem; border-left: 5px solid #4facfe; margin-bottom: 1rem; border-radius: 5px; }
+
+        /* Botões */
+        #darkModeBtn, #topBtn { position: fixed; padding: 0.6rem 1rem; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; z-index: 1000; }
+        #darkModeBtn { bottom: 1rem; right: 1rem; background: #4facfe; color: white; }
+        #topBtn { bottom: 4rem; right: 1rem; background: #ffdd59; color: #333; display: none; }
+
+        /* Footer */
+        footer { text-align: center; padding: 2rem 1rem; background: #333; color: white; margin-top: 2rem; }
+
+        /* Responsividade */
+        @media(max-width: 500px) { .dimension { flex: 1 1 100%; } }
+
+        /* Modo escuro */
+        body.dark-mode { background: #121212; color: #e0e0e0; }
+        body.dark-mode header { background: #0f4c75; }
+        body.dark-mode section { background: #1e1e1e; box-shadow: 0 8px 16px rgba(255,255,255,0.05); }
+        body.dark-mode .dimension { background: #2c2c2c; }
+        body.dark-mode .example { background: #003f5c; color: #fff; border-left-color: #ffdd59; }
+        body.dark-mode footer { background: #000; }
     </style>
 </head>
 <body>
@@ -120,7 +60,7 @@
 <header>
     <h1>Tridimensionalismo Científico</h1>
     <p>Explorando a ciência das três dimensões com exemplos e evidências confiáveis</p>
-    <nav>
+    <nav aria-label="Menu principal">
         <a href="#intro">Introdução</a>
         <a href="#concepts">Conceitos</a>
         <a href="#examples">Exemplos</a>
@@ -128,72 +68,92 @@
     </nav>
 </header>
 
-<section id="intro">
-    <h2>Introdução</h2>
-    <p>O tridimensionalismo estuda como objetos e fenômenos ocupam e interagem dentro de três dimensões espaciais: altura, largura e profundidade. Essa perspectiva é fundamental na física, matemática, biologia e até na computação gráfica.</p>
-    <p>Historicamente, o entendimento da tridimensionalidade permitiu avanços na arquitetura, engenharia e modelagem 3D em simulações científicas.</p>
-</section>
+<main>
+    <section id="intro">
+        <h2>Introdução</h2>
+        <p>O tridimensionalismo estuda como objetos e fenômenos ocupam e interagem dentro de três dimensões espaciais: altura, largura e profundidade. Essa perspectiva é fundamental na física, matemática, biologia e até na computação gráfica.</p>
+        <p>Historicamente, o entendimento da tridimensionalidade permitiu avanços na arquitetura, engenharia e modelagem 3D em simulações científicas.</p>
+    </section>
 
-<section id="concepts">
-    <h2>Conceitos Fundamentais</h2>
-    <div class="dimension-box">
-        <div class="dimension">
-            <h3>Primeira Dimensão (1D)</h3>
-            <p>Representa apenas comprimento. Exemplo: uma linha reta.</p>
+    <section id="concepts">
+        <h2>Conceitos Fundamentais</h2>
+        <div class="dimension-box">
+            <div class="dimension">
+                <h3>Primeira Dimensão (1D)</h3>
+                <p>Representa apenas comprimento. Exemplo: uma linha reta.</p>
+            </div>
+            <div class="dimension">
+                <h3>Segunda Dimensão (2D)</h3>
+                <p>Inclui comprimento e largura. Exemplo: um quadrado ou círculo.</p>
+            </div>
+            <div class="dimension">
+                <h3>Terceira Dimensão (3D)</h3>
+                <p>Inclui comprimento, largura e profundidade. Exemplo: um cubo ou esfera.</p>
+            </div>
         </div>
-        <div class="dimension">
-            <h3>Segunda Dimensão (2D)</h3>
-            <p>Inclui comprimento e largura. Exemplo: um quadrado ou círculo.</p>
-        </div>
-        <div class="dimension">
-            <h3>Terceira Dimensão (3D)</h3>
-            <p>Inclui comprimento, largura e profundidade. Exemplo: um cubo ou esfera.</p>
-        </div>
-    </div>
-</section>
+    </section>
 
-<section id="examples">
-    <h2>Exemplos e Aplicações</h2>
-    <div class="example">
-        <h4>Modelagem 3D</h4>
-        <p>Softwares de modelagem como Blender e AutoCAD permitem criar objetos tridimensionais usados em arquitetura, animação e engenharia.</p>
-    </div>
-    <div class="example">
-        <h4>Simulações Científicas</h4>
-        <p>Na física, modelos 3D ajudam a prever o comportamento de moléculas, planetas e fluidos, aumentando a precisão de experimentos.</p>
-    </div>
-    <div class="example">
-        <h4>Medicina e Biologia</h4>
-        <p>Escaneamentos tridimensionais como tomografias auxiliam no estudo detalhado de órgãos e tecidos humanos.</p>
-    </div>
-</section>
+    <section id="examples">
+        <h2>Exemplos e Aplicações</h2>
+        <article class="example">
+            <h4>Modelagem 3D</h4>
+            <p>Softwares como Blender e AutoCAD permitem criar objetos tridimensionais usados em arquitetura, animação e engenharia.</p>
+        </article>
+        <article class="example">
+            <h4>Simulações Científicas</h4>
+            <p>Na física, modelos 3D ajudam a prever o comportamento de moléculas, planetas e fluidos, aumentando a precisão de experimentos.</p>
+        </article>
+        <article class="example">
+            <h4>Medicina e Biologia</h4>
+            <p>Escaneamentos tridimensionais como tomografias auxiliam no estudo detalhado de órgãos e tecidos humanos.</p>
+        </article>
+    </section>
 
-<section id="research">
-    <h2>Pesquisas e Referências</h2>
-    <p>Estudos confiáveis sobre tridimensionalismo podem ser encontrados em fontes científicas renomadas, como:</p>
-    <ul>
-        <li><a class="external" href="https://www.sciencedirect.com/topics/engineering/three-dimensional" target="_blank">ScienceDirect - Three Dimensional Studies</a></li>
-        <li><a class="external" href="https://www.nature.com/subjects/three-dimensional-structures" target="_blank">Nature - Three Dimensional Structures</a></li>
-        <li><a class="external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5371737/" target="_blank">PubMed - 3D Modeling in Biological Research</a></li>
-    </ul>
-</section>
+    <section id="research">
+        <h2>Pesquisas e Referências</h2>
+        <p>Estudos confiáveis sobre tridimensionalismo podem ser encontrados em fontes científicas renomadas:</p>
+        <ul>
+            <li><a class="external" href="https://www.sciencedirect.com/topics/engineering/three-dimensional" target="_blank">ScienceDirect - Three Dimensional Studies</a></li>
+            <li><a class="external" href="https://www.nature.com/subjects/three-dimensional-structures" target="_blank">Nature - Three Dimensional Structures</a></li>
+            <li><a class="external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5371737/" target="_blank">PubMed - 3D Modeling in Biological Research</a></li>
+        </ul>
+    </section>
+</main>
 
 <footer>
     <p>&copy; 2025 Tridimensionalismo Científico | Projeto Educativo</p>
 </footer>
 
+<!-- Botões -->
+<button id="darkModeBtn">Modo Escuro</button>
+<button id="topBtn">↑ Topo</button>
+
 <script>
-    // Animação suave das seções
+    // Animação de seções
     const sections = document.querySelectorAll('section');
     const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
+        entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
     }, { threshold: 0.1 });
-
     sections.forEach(section => observer.observe(section));
+
+    // Menu ativo no scroll
+    const navLinks = document.querySelectorAll('nav a');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => { if(scrollY >= section.offsetTop - 70) current = section.getAttribute('id'); });
+        navLinks.forEach(link => { link.classList.remove('active'); if(link.getAttribute('href') === '#' + current) link.classList.add('active'); });
+    });
+
+    // Modo escuro toggle
+    const darkBtn = document.getElementById('darkModeBtn');
+    darkBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+
+    // Botão voltar ao topo
+    const topBtn = document.getElementById('topBtn');
+    window.addEventListener('scroll', () => { topBtn.style.display = window.scrollY > 300 ? 'block' : 'none'; });
+    topBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 </script>
 
 </body>
