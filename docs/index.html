@@ -1,160 +1,119 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tridimensionalismo científico: conceitos, exemplos, pesquisas e aplicações práticas em 3D.">
-    <title>Tridimensionalismo Científico</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Reset e fonte */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; scroll-behavior: smooth; }
-        main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        
-        /* Header */
-        header { background: linear-gradient(90deg, #4facfe, #00f2fe); color: white; padding: 2rem 1rem; text-align: center; position: sticky; top: 0; z-index: 1000; }
-        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        header p { font-size: 1.2rem; }
-        nav { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap; }
-        nav a { color: white; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        nav a:hover, nav a.active { text-decoration: underline; color: #ffdd59; }
-
-        /* Seções */
-        section { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); margin-bottom: 2rem;
-                 opacity: 0; transform: translateY(20px) scale(0.95); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        section.visible { opacity: 1; transform: translateY(0) scale(1); }
-        h2 { color: #4facfe; margin-bottom: 1rem; }
-        p { margin-bottom: 1rem; }
-
-        /* Dimensões */
-        .dimension-box { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-        .dimension { flex: 1 1 200px; background: #fff3e6; padding: 1rem; border-radius: 10px; text-align: center; transition: transform 0.3s; }
-        .dimension:hover { transform: translateY(-5px); }
-
-        /* Exemplos */
-        .example { background: #eef7ff; padding: 1rem; border-left: 5px solid #4facfe; margin-bottom: 1rem; border-radius: 5px; }
-
-        /* Botões */
-        #darkModeBtn, #topBtn { position: fixed; padding: 0.6rem 1rem; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; z-index: 1000; }
-        #darkModeBtn { bottom: 1rem; right: 1rem; background: #4facfe; color: white; }
-        #topBtn { bottom: 4rem; right: 1rem; background: #ffdd59; color: #333; display: none; }
-
-        /* Footer */
-        footer { text-align: center; padding: 2rem 1rem; background: #333; color: white; margin-top: 2rem; }
-
-        /* Responsividade */
-        @media(max-width: 500px) { .dimension { flex: 1 1 100%; } }
-
-        /* Modo escuro */
-        body.dark-mode { background: #121212; color: #e0e0e0; }
-        body.dark-mode header { background: #0f4c75; }
-        body.dark-mode section { background: #1e1e1e; box-shadow: 0 8px 16px rgba(255,255,255,0.05); }
-        body.dark-mode .dimension { background: #2c2c2c; }
-        body.dark-mode .example { background: #003f5c; color: #fff; border-left-color: #ffdd59; }
-        body.dark-mode footer { background: #000; }
-    </style>
+    <title>A Matriz da Realidade | Uma Exploração da Teoria da Simulação</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
 </head>
 <body>
+    <header>
+        <h1 class="glitch" data-text="A Matriz da Realidade">A Matriz da Realidade</h1>
+        <p>Um mergulho profundo na Hipótese da Simulação e suas implicações.</p>
+    </header>
 
-<header>
-    <h1>Tridimensionalismo Científico</h1>
-    <p>Explorando a ciência das três dimensões com exemplos e evidências confiáveis</p>
-    <nav aria-label="Menu principal">
-        <a href="#intro">Introdução</a>
-        <a href="#concepts">Conceitos</a>
-        <a href="#examples">Exemplos</a>
-        <a href="#research">Pesquisas</a>
-    </nav>
-</header>
+    <div class="container">
+        <aside class="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-content="introducao">Introdução</a></li>
+                    <li><a href="#" class="nav-link" data-content="bostrom">A Hipótese de Nick Bostrom</a></li>
+                    <li><a href="#" class="nav-link" data-content="informacao">Teoria da Informação</a></li>
+                    <li><a href="#" class="nav-link" data-content="filosofia">Argumentos Filosóficos</a></li>
+                    <li><a href="#" class="nav-link" data-content="fisica">Física e Matemática</a></li>
+                    <li><a href="#" class="nav-link" data-content="variacoes">Variações da Teoria</a></li>
+                    <li><a href="#" class="nav-link" data-content="criticas">Críticas e Contrapontos</a></li>
+                    <li><a href="#" class="nav-link" data-content="cultura">Cultura e Influência</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-<main>
-    <section id="intro">
-        <h2>Introdução</h2>
-        <p>O tridimensionalismo estuda como objetos e fenômenos ocupam e interagem dentro de três dimensões espaciais: altura, largura e profundidade. Essa perspectiva é fundamental na física, matemática, biologia e até na computação gráfica.</p>
-        <p>Historicamente, o entendimento da tridimensionalidade permitiu avanços na arquitetura, engenharia e modelagem 3D em simulações científicas.</p>
-    </section>
+        <main id="content-area">
+            </main>
+    </div>
 
-    <section id="concepts">
-        <h2>Conceitos Fundamentais</h2>
-        <div class="dimension-box">
-            <div class="dimension">
-                <h3>Primeira Dimensão (1D)</h3>
-                <p>Representa apenas comprimento. Exemplo: uma linha reta.</p>
-            </div>
-            <div class="dimension">
-                <h3>Segunda Dimensão (2D)</h3>
-                <p>Inclui comprimento e largura. Exemplo: um quadrado ou círculo.</p>
-            </div>
-            <div class="dimension">
-                <h3>Terceira Dimensão (3D)</h3>
-                <p>Inclui comprimento, largura e profundidade. Exemplo: um cubo ou esfera.</p>
-            </div>
-        </div>
-    </section>
+    <template id="introducao">
+        <h2>Bem-vindo à Simulação?</h2>
+        <p>A Teoria da Simulação postula que a nossa realidade, incluindo o universo e tudo que ele contém, é na verdade uma simulação artificial, possivelmente um programa de computador. Esta ideia, que já foi relegada à ficção científica, hoje é debatida seriamente por filósofos, físicos e tecnólogos.</p>
+        <p>Este site serve como um repositório de conhecimento, explorando os principais argumentos, evidências, críticas e o impacto cultural desta hipótese fascinante. Navegue pelos tópicos na barra lateral para explorar os mistérios da nossa possível realidade digital.</p>
+    </template>
 
-    <section id="examples">
-        <h2>Exemplos e Aplicações</h2>
-        <article class="example">
-            <h4>Modelagem 3D</h4>
-            <p>Softwares como Blender e AutoCAD permitem criar objetos tridimensionais usados em arquitetura, animação e engenharia.</p>
-        </article>
-        <article class="example">
-            <h4>Simulações Científicas</h4>
-            <p>Na física, modelos 3D ajudam a prever o comportamento de moléculas, planetas e fluidos, aumentando a precisão de experimentos.</p>
-        </article>
-        <article class="example">
-            <h4>Medicina e Biologia</h4>
-            <p>Escaneamentos tridimensionais como tomografias auxiliam no estudo detalhado de órgãos e tecidos humanos.</p>
-        </article>
-    </section>
-
-    <section id="research">
-        <h2>Pesquisas e Referências</h2>
-        <p>Estudos confiáveis sobre tridimensionalismo podem ser encontrados em fontes científicas renomadas:</p>
+    <template id="bostrom">
+        <h2>A Hipótese da Simulação (Nick Bostrom)</h2>
+        <p>O argumento mais famoso a favor da teoria foi formulado pelo filósofo Nick Bostrom em 2003. Ele não afirma que <em>estamos</em> em uma simulação, mas que uma das três seguintes proposições é quase certamente verdadeira:</p>
+        <ol>
+            <li><strong>Extinção:</strong> A espécie humana será extinta antes de alcançar um estágio "pós-humano" com capacidade computacional para rodar simulações de alta fidelidade.</li>
+            <li><strong>Desinteresse:</strong> Civilizações pós-humanas não terão interesse em rodar simulações de seus ancestrais (talvez por razões éticas ou simplesmente por falta de vontade).</li>
+            <li><strong>Simulação:</strong> Estamos quase certamente vivendo em uma simulação de computador.</li>
+        </ol>
+        <p>A lógica é que, se as proposições 1 e 2 forem falsas, então uma civilização avançada rodaria um número gigantesco de "simulações de ancestrais". Estatisticamente, seria muito mais provável que fôssemos uma das inúmeras consciências simuladas do que uma das consciências originais.</p>
+        <pre><code>Se (não-Extinção E não-Desinteresse) Então (Provavelmente_Simulação)</code></pre>
+    </template>
+    
+    <template id="informacao">
+        <h2>Teoria da Informação no Universo</h2>
+        <p>A física moderna tem revelado que o universo pode ser fundamentalmente descrito por informação. Conceitos como o Princípio Holográfico e a ideia de "It from Bit" de John Archibald Wheeler sugerem que a realidade física emerge de bits de informação.</p>
         <ul>
-            <li><a class="external" href="https://www.sciencedirect.com/topics/engineering/three-dimensional" target="_blank">ScienceDirect - Three Dimensional Studies</a></li>
-            <li><a class="external" href="https://www.nature.com/subjects/three-dimensional-structures" target="_blank">Nature - Three Dimensional Structures</a></li>
-            <li><a class="external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5371737/" target="_blank">PubMed - 3D Modeling in Biological Research</a></li>
+            <li><strong>It from Bit:</strong> A ideia de que todo "it" – toda partícula, todo campo de força, até o próprio contínuo espaço-tempo – deriva sua função, seu significado, sua própria existência, de respostas a perguntas "sim" ou "não", ou seja, de bits.</li>
+            <li><strong>Princípio Holográfico:</strong> Uma teoria que sugere que toda a informação contida em um volume de espaço pode ser representada por uma teoria na fronteira desse volume. Essencialmente, nosso universo 3D poderia ser uma projeção de informação armazenada em uma superfície 2D distante.</li>
         </ul>
-    </section>
-</main>
+        <p>Se o universo é, em sua essência, informacional, a ideia de que ele possa ser o resultado de um processo computacional se torna mais plausível.</p>
+    </template>
+    
+    <template id="filosofia">
+        <h2>Argumentos Filosóficos Relacionados</h2>
+        <p>A ideia de que a nossa realidade não é o que parece é antiga na filosofia.</p>
+        <ul>
+            <li><strong>A Alegoria da Caverna de Platão:</strong> Prisioneiros acorrentados em uma caverna veem apenas sombras projetadas na parede e acreditam que elas são a realidade. A teoria da simulação é uma versão moderna e tecnológica desta alegoria.</li>
+            <li><strong>O Gênio Maligno de Descartes:</strong> René Descartes ponderou se um "gênio maligno" extremamente poderoso poderia estar enganando seus sentidos, fazendo-o acreditar em uma realidade que não existe.</li>
+            <li><strong>Cérebro numa Cuba (Brain in a Vat):</strong> Um experimento mental que questiona se você poderia ser apenas um cérebro em um laboratório, com todas as suas experiências sendo alimentadas por um supercomputador.</li>
+        </ul>
+    </template>
+    
+    <template id="fisica">
+        <h2>Física e Matemática que se Relacionam</h2>
+        <p>Algumas descobertas e teorias na física e matemática parecem se alinhar com a hipótese da simulação.</p>
+        <ul>
+            <li><strong>Quantização:</strong> No nível quântico, energia, espaço e tempo não são contínuos, mas existem em pacotes discretos (quanta). Isso é análogo aos pixels em uma tela ou aos ciclos de clock de um processador. O Comprimento de Planck ($$L_P \approx 1.616 \times 10^{-35} \text{ m}$$) poderia ser a "resolução" fundamental da nossa realidade simulada.</li>
+            <li><strong>Constantes Universais:</strong> A velocidade da luz ($c$), uma constante universal, age como um limite de velocidade para a transferência de informação no universo, semelhante a um limite de processamento em um sistema computacional.</li>
+            <li><strong>Mecânica Quântica:</strong> O estranho comportamento de partículas, que só definem seu estado ao serem observadas (colapso da função de onda), pode ser interpretado como um sistema que "renderiza" a realidade apenas quando necessário, para economizar recursos computacionais.</li>
+        </ul>
+    </template>
 
-<footer>
-    <p>&copy; 2025 Tridimensionalismo Científico | Projeto Educativo</p>
-</footer>
+    <template id="variacoes">
+        <h2>Variações da Teoria da Simulação</h2>
+        <p>A hipótese não é monolítica e possui diversas variações interessantes:</p>
+        <ul>
+            <li><strong>Simulação de Ancestrais:</strong> A versão de Bostrom, onde civilizações futuras rodam simulações para estudar seu passado.</li>
+            <li><strong>Realidades Aninhadas (Nested Simulations):</strong> Nossa simulação pode estar rodando dentro de outra simulação, que por sua vez está dentro de outra, em uma hierarquia potencialmente infinita.</li>
+            <li><strong>Universo como Laboratório:</strong> A simulação pode ter sido criada para estudar a emergência da vida, da consciência ou para testar as leis da física.</li>
+            <li><strong>Simulação de "Baixo Custo":</strong> O universo pode não ser simulado em sua totalidade. Apenas as partes observadas são "renderizadas" em alta fidelidade (como em um videogame, onde o que está fora do campo de visão do jogador não é processado).</li>
+        </ul>
+    </template>
+    
+    <template id="criticas">
+        <h2>Críticas à Teoria e Contrapontos</h2>
+        <p>A hipótese da simulação enfrenta ceticismo e críticas significativas.</p>
+        <ul>
+            <li><strong>Problema da Regressão Infinita:</strong> Se nosso universo é uma simulação, quem simulou os simuladores? Isso leva a uma regressão infinita de realidades, o que não resolve a questão fundamental da "realidade base".</li>
+            <li><strong>Complexidade Computacional:</strong> Simular um universo inteiro, átomo por átomo, exigiria um poder computacional inimaginavelmente vasto, possivelmente maior do que o próprio universo simulado poderia conter. (Contra-argumento: a simulação poderia usar "atalhos" e não simular tudo em nível quântico).</li>
+            <li><strong>Não-Falsificabilidade:</strong> Uma das maiores críticas é que a teoria pode ser não-falsificável. Qualquer evidência que encontrarmos (ou a falta dela) pode ser explicada como "parte do programa". Uma teoria que não pode ser testada ou refutada é considerada por muitos como não-científica.</li>
+            <li><strong>O Problema da Consciência:</strong> Como uma simulação poderia gerar consciência genuína e experiências subjetivas (qualia)? Este é um dos maiores mistérios, tanto para a filosofia da mente quanto para a hipótese da simulação.</li>
+        </ul>
+    </template>
 
-<!-- Botões -->
-<button id="darkModeBtn">Modo Escuro</button>
-<button id="topBtn">↑ Topo</button>
-
-<script>
-    // Animação de seções
-    const sections = document.querySelectorAll('section');
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    sections.forEach(section => observer.observe(section));
-
-    // Menu ativo no scroll
-    const navLinks = document.querySelectorAll('nav a');
-    window.addEventListener('scroll', () => {
-        let current = '';
-        sections.forEach(section => { if(scrollY >= section.offsetTop - 70) current = section.getAttribute('id'); });
-        navLinks.forEach(link => { link.classList.remove('active'); if(link.getAttribute('href') === '#' + current) link.classList.add('active'); });
-    });
-
-    // Modo escuro toggle
-    const darkBtn = document.getElementById('darkModeBtn');
-    darkBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-    });
-
-    // Botão voltar ao topo
-    const topBtn = document.getElementById('topBtn');
-    window.addEventListener('scroll', () => { topBtn.style.display = window.scrollY > 300 ? 'block' : 'none'; });
-    topBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-</script>
-
+    <template id="cultura">
+        <h2>Cultura e Influência</h2>
+        <p>A Teoria da Simulação permeou a cultura pop, influenciando filmes, livros e jogos que exploram a natureza da realidade.</p>
+        <ul>
+            <li><strong>Cinema:</strong> A trilogia <em>Matrix</em> é o exemplo mais icônico. Outros filmes como <em>O Décimo Terceiro Andar</em>, <em>eXistenZ</em>, <em>A Origem</em> e <em>O Show de Truman</em> também exploram temas semelhantes.</li>
+            <li><strong>Literatura:</strong> Autores de ficção científica como Philip K. Dick (com obras como <em>Ubik</em> e <em>Valis</em>) e Stanisław Lem (em <em>Golem XIV</em>) já exploravam a ideia de realidades artificiais muito antes do debate moderno.</li>
+            <li><strong>Videogames:</strong> O próprio meio do videogame é uma forma de simulação, tornando-o um terreno fértil para explorar essas ideias. Jogos como a série <em>Assassin's Creed</em> (com o Animus) e <em>No Man's Sky</em> (com seu universo proceduralmente gerado) tocam diretamente nesses conceitos.</li>
+        </ul>
+    </template>
 </body>
 </html>
