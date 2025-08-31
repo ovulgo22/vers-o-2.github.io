@@ -2,70 +2,105 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Mundo 1D → 2D → 3D</title>
+<title>Mundo 1D → 2D → 3D Avançado</title>
 <style>
   body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #f0f0f0;
+    background: linear-gradient(120deg, #f9f9f9, #d0e8f2);
     font-family: Arial, sans-serif;
+    perspective: 800px; /* perspectiva 3D */
   }
+
   .container {
     text-align: center;
   }
+
   .dimension {
-    margin: 20px 0;
+    margin: 20px 0 10px;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 28px;
+    color: #333;
+    text-shadow: 1px 1px 2px #aaa;
   }
+
   .visual {
     margin: 20px auto;
     width: 200px;
     height: 200px;
     position: relative;
   }
+
+  /* Linha 1D */
   .line {
-    width: 100%;
-    height: 4px;
-    background: #333;
+    width: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #ff6f61, #ffcc5c);
     position: absolute;
     top: 50%;
     left: 0;
     transform: scaleX(0);
+    transform-origin: left center;
+    border-radius: 3px;
     animation: growLine 2s forwards;
   }
+
+  @keyframes growLine {
+    to { transform: scaleX(1); }
+  }
+
+  /* Quadrado 2D */
   .square {
     width: 0;
     height: 0;
-    background: #4CAF50;
+    background: linear-gradient(135deg, #6a5acd, #00bfff);
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) rotate(0deg);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     animation: growSquare 2s forwards 2s;
   }
+
+  @keyframes growSquare {
+    to { width: 150px; height: 150px; rotate: 45deg; }
+  }
+
+  /* Cubo 3D */
   .cube {
-    width: 0;
-    height: 0;
-    background: #2196F3;
+    width: 100px;
+    height: 100px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform-style: preserve-3d;
     transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) scale(0);
-    animation: growCube 2s forwards 4s, rotateCube 5s linear infinite 6s;
+    animation: growCube 2s forwards 4s, rotateCube 6s linear infinite 6s;
   }
-  @keyframes growLine {
-    to { transform: scaleX(1); }
+
+  .cube div {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 140, 0, 0.8);
+    border: 2px solid #ffdd99;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
   }
-  @keyframes growSquare {
-    to { width: 150px; height: 150px; }
-  }
+
+  .front  { transform: translateZ(50px); }
+  .back   { transform: rotateY(180deg) translateZ(50px); }
+  .right  { transform: rotateY(90deg) translateZ(50px); }
+  .left   { transform: rotateY(-90deg) translateZ(50px); }
+  .top    { transform: rotateX(90deg) translateZ(50px); }
+  .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
   @keyframes growCube {
-    to { width: 100px; height: 100px; scale: 1; }
+    to { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) scale(1); }
   }
+
   @keyframes rotateCube {
     0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg); }
     100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg); }
@@ -81,7 +116,16 @@
     <div class="visual"><div class="square"></div></div>
 
     <div class="dimension">3D - Cubo</div>
-    <div class="visual"><div class="cube"></div></div>
+    <div class="visual">
+      <div class="cube">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="right"></div>
+        <div class="left"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+      </div>
+    </div>
   </div>
 </body>
 </html>
